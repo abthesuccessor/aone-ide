@@ -1,0 +1,24 @@
+SearchWorkspace:
+  post:
+    operationId: searchWorkspace
+    tags: [workspace]
+    summary: Search indexed workspace paths, source text, and structural facts.
+    description: >-
+      Executes a bounded native SQLite FTS5 query. Source matches are re-read
+      through the attested workspace boundary before snippets are returned.
+    x-aone-tauri-command: search_workspace
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./commands.yaml#/SearchWorkspaceArgs
+    responses:
+      '200':
+        description: Ranked, bounded, exact-range workspace matches.
+        content:
+          application/json:
+            schema:
+              $ref: ./search.yaml#/WorkspaceSearchResult
+      default:
+        $ref: ../aone-ipc.openapi.yaml#/components/responses/IpcError

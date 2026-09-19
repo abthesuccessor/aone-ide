@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#121310" />
+    <meta
+      name="description"
+      content="Aone IDE maps source structure, local runtime evidence, and API traffic in one lightweight macOS workbench."
+    />
+    <title>Aone IDE | Understand the code AI wrote</title>
+    <link rel="icon" type="image/png" href="./assets/aone-icon.png" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./download.js" type="module"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="wordmark" href="#main" aria-label="Aone IDE home">
+        <span class="wordmark-mark" aria-hidden="true">A1</span>
+        <span>Aone IDE</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#workbench">Workbench</a>
+        <a href="#proof">Proof</a>
+        <a class="header-download" href="#download">Download</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="hero-kicker">Local execution intelligence for macOS</p>
+          <h1 id="hero-title">Understand the code AI wrote.</h1>
+          <p class="hero-summary">Trace APIs, services, databases, and runtime evidence in one local macOS workbench.</p>
+          <div class="hero-actions">
+            <a class="primary-download" data-download-link href="#download" aria-describedby="build-state">
+              Download for Mac
+            </a>
+            <a class="secondary-link" href="#workbench">See the workbench</a>
+          </div>
+        </div>
+        <aside class="hero-proof" aria-label="Current build facts">
+          <dl>
+            <div><dt>Installer</dt><dd data-build-size>Checking</dd></div>
+            <div><dt>Architecture</dt><dd data-build-architecture>Checking</dd></div>
+            <div><dt>Minimum macOS</dt><dd data-build-macos>Checking</dd></div>
+            <div><dt>Account</dt><dd>Not required</dd></div>
+          </dl>
+          <p class="build-state" id="build-state" data-build-state role="status">Loading release metadata...</p>
+        </aside>
+      </section>
+
+      <section class="proof-strip" aria-label="Product facts">
+        <div><strong>Embedded graph</strong><span>SQLite WAL plus petgraph</span></div>
+        <div><strong>Local authority</strong><span>Rust owns files, runs, and secrets</span></div>
+        <div><strong>Explicit evidence</strong><span>Static, observed, and inferred stay distinct</span></div>
+      </section>
+
+      <section class="workbench" id="workbench" aria-labelledby="workbench-title">
+        <header>
+          <h2 id="workbench-title">One view from route to database.</h2>
+          <p>Explore a bounded graph, open the exact source range, run a service, and inspect redacted API evidence.</p>
+        </header>
+        <figure class="workbench-frame">
+          <img
+            src="./assets/aone-workbench.png"
+            width="1600"
+            height="1000"
+            alt="Aone IDE showing a source graph, workspace files, runtime events, and an evidence inspector"
+            decoding="async"
+          />
+          <figcaption>A real browser-demo capture of the Aone workbench.</figcaption>
+        </figure>
+      </section>
+
+      <section class="capabilities" aria-label="Core capabilities">
+        <article>
+          <div><h2>VS Code-style workbench</h2><p>Edit every indexed text file with Monaco, format and save safely, use the integrated terminal and Git, and choose VS Code Dark Modern, Cursor Dark, Light, High Contrast, Tokyo Night, or Catppuccin.</p></div>
+        </article>
+        <article>
+          <div><h2>Source graph</h2><p>Map files, symbols, routes, services, repositories, models, databases, and dependencies with provenance.</p></div>
+        </article>
+        <article>
+          <div><h2>Runtime evidence</h2><p>Start detected profiles and keep bounded stdout, stderr, process, and request events beside static structure.</p></div>
+        </article>
+        <article>
+          <div><h2>API client</h2><p>Send REST and GraphQL requests locally, inspect timing and response data, and redact sensitive values.</p></div>
+        </article>
+        <article>
+          <div><h2>Permission-first setup</h2><p>Detect the project stack, installed toolchains, and existing run profiles only after native approval, then show exact evidence and recommendations before anything executes.</p></div>
+        </article>
+        <article>
+          <div><h2>AI configuration hub</h2><p>Find approved MCP, CLI, agent, skill, instructions, and rules locations for Codex, Claude, Cursor, Gemini, Copilot, and VS Code without exposing file contents to the WebView.</p></div>
+        </article>
+      </section>
+
+      <section class="release-proof" id="proof" aria-labelledby="proof-title">
+        <div>
+          <p class="section-label">Release proof</p>
+          <h2 id="proof-title">The download says exactly what it is.</h2>
+          <p>Build metadata is generated from the DMG. On public releases, macOS remains the authority for Developer ID and notarization verification.</p>
+        </div>
+        <dl class="release-facts">
+          <div><dt>Version</dt><dd data-build-version>Checking</dd></div>
+          <div><dt>Signing</dt><dd data-build-signing>Checking</dd></div>
+          <div><dt>Notarization</dt><dd data-build-notarization>Checking</dd></div>
+          <div><dt>Published</dt><dd data-build-published>Checking</dd></div>
+        </dl>
+      </section>
+
+      <section class="security-note" aria-labelledby="security-title">
+        <div>
+          <h2 id="security-title">No login. No graph server. No bundled runtime.</h2>
+          <p>Aone uses the system WebView, an embedded SQLite store, and the toolchains already installed on your Mac.</p>
+        </div>
+        <ul>
+          <li>Scanning does not write to the opened repository.</li>
+          <li>Environment values stay in Rust memory and React receives names only.</li>
+          <li>PATH, tool versions, and AI configuration locations are inspected only after native approval.</li>
+          <li>AI explanations are optional and remain labeled inferred.</li>
+        </ul>
+      </section>
+
+      <section class="download-panel" id="download" aria-labelledby="download-title">
+        <div>
+          <h2 id="download-title">Install Aone IDE on macOS.</h2>
+          <p data-download-note>The installer will appear here when consistent release metadata loads.</p>
+        </div>
+        <div class="download-actions">
+          <a class="primary-download" data-download-link href="#download">Download for Mac</a>
+          <button type="button" class="checksum-button" data-copy-checksum disabled>Copy SHA-256</button>
+        </div>
+        <code class="checksum" data-checksum>Checksum unavailable</code>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>Aone IDE</span>
+      <span>Local-first execution intelligence</span>
+      <a href="./downloads/manifest.json">Release manifest</a>
+    </footer>
+  </body>
+</html>

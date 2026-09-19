@@ -1,0 +1,258 @@
+.api-catalog-scroll {
+  grid-row: 4;
+  min-height: 0;
+  overflow: auto;
+  padding: 10px 11px 40px;
+  outline: 0;
+}
+
+.api-role-section { margin-bottom: 14px; }
+
+.api-role-heading {
+  position: sticky;
+  z-index: 2;
+  top: -10px;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 43px;
+  gap: 7px;
+  padding: 5px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius) var(--radius) 0 0;
+  color: var(--amber-strong);
+  background: color-mix(in srgb, var(--ink-850) 96%, transparent);
+  box-shadow: 0 5px 12px var(--workbench-shadow);
+}
+
+.api-role-heading > span {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.api-role-heading strong { color: var(--paper); font-size: 11px; }
+.api-role-heading small { color: var(--text-muted); font-size: 8px; }
+
+.api-role-count,
+.api-group-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 20px;
+  padding: 0 6px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  color: var(--text-secondary) !important;
+  background: var(--ink-900);
+  font-family: var(--mono);
+  font-size: 8px !important;
+}
+
+.api-source-groups {
+  border: 1px solid var(--line);
+  border-top: 0;
+  background: var(--ink-900);
+}
+
+.api-source-group {
+  border-bottom: 1px solid var(--line);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 240px;
+}
+
+.api-source-group:last-child { border-bottom: 0; }
+
+.api-source-toggle {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+  align-items: center;
+  width: 100%;
+  min-height: 39px;
+  gap: 5px;
+  padding: 5px 8px;
+  border: 0;
+  color: var(--text-muted);
+  background: var(--ink-900);
+  text-align: left;
+}
+
+.api-source-toggle:hover,
+.api-source-toggle[aria-expanded="true"] {
+  color: var(--amber-strong);
+  background: var(--ink-800);
+}
+
+.api-source-title {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.api-source-title strong,
+.api-source-title small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.api-source-title strong { color: var(--paper); font-size: 10px; }
+.api-source-title small { color: var(--text-muted); font-family: var(--mono); font-size: 7px; }
+
+.api-route-groups {
+  padding: 0 8px 9px 30px;
+  background: var(--ink-950);
+}
+
+.api-route-group {
+  display: grid;
+  grid-template-columns: minmax(145px, 0.42fr) minmax(600px, 1.58fr);
+  border-top: 1px solid var(--line);
+}
+
+.api-route-heading {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  align-content: start;
+  gap: 3px 4px;
+  min-width: 0;
+  padding: 9px 8px;
+  color: var(--text-muted);
+}
+
+.api-route-heading strong {
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-family: var(--mono);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.api-route-heading span { grid-column: 2; color: var(--text-muted); font-size: 8px; }
+.api-endpoint-list { min-width: 0; border-left: 1px solid var(--line); }
+
+.api-endpoint-row {
+  display: grid;
+  grid-template-columns: 52px minmax(210px, 1.7fr) minmax(140px, 0.85fr) 75px minmax(165px, 1fr) 20px;
+  align-items: center;
+  width: 100%;
+  min-height: 43px;
+  gap: 8px;
+  padding: 4px 7px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--text-secondary);
+  background: transparent;
+  text-align: left;
+}
+
+.api-endpoint-row:last-child { border-bottom: 0; }
+.api-endpoint-row:hover { background: var(--ink-800); }
+.api-endpoint-row.is-selected {
+  background: var(--workbench-list-active-selection-background);
+  box-shadow: inset 2px 0 var(--focus);
+}
+
+.api-method {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  min-width: 44px;
+  height: 20px;
+  padding: 0 5px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  color: var(--text-secondary);
+  background: var(--ink-850);
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 750;
+}
+
+.api-method[data-method="GET"] { color: var(--observed); border-color: color-mix(in srgb, var(--observed) 48%, var(--line)); }
+.api-method[data-method="POST"] { color: var(--amber-strong); border-color: color-mix(in srgb, var(--amber) 48%, var(--line)); }
+.api-method[data-method="PUT"],
+.api-method[data-method="PATCH"] { color: var(--inferred); border-color: color-mix(in srgb, var(--inferred) 48%, var(--line)); }
+.api-method[data-method="DELETE"] { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 48%, var(--line)); }
+
+.api-operation-main,
+.api-owner,
+.api-source,
+.api-selection-bar > span:nth-child(2) {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.api-operation-main strong,
+.api-owner strong,
+.api-source span,
+.api-selection-bar strong,
+.api-operation-main span,
+.api-owner span,
+.api-source small,
+.api-selection-bar small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.api-operation-main strong,
+.api-owner strong,
+.api-source span,
+.api-selection-bar strong { color: var(--paper); font-family: var(--mono); font-size: 9px; }
+
+.api-operation-main span,
+.api-owner span,
+.api-source small,
+.api-selection-bar small { color: var(--text-muted); font-size: 8px; }
+
+.api-coverage {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.api-coverage small {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 7px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.api-coverage .has-client-coverage { color: var(--observed); }
+.api-open-hint { color: var(--text-muted); }
+.api-endpoint-row:hover .api-open-hint,
+.api-endpoint-row.is-selected .api-open-hint { color: var(--paper); }
+
+.api-show-more { margin: 8px 0 0 calc(42% + 5px); font-size: 9px; }
+
+.api-selection-bar {
+  grid-row: 5;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 43px;
+  gap: 9px;
+  padding: 5px 10px;
+  border-top: 1px solid var(--line-strong);
+  background: var(--ink-850);
+  box-shadow: 0 -5px 14px var(--workbench-shadow);
+}
+
+.api-selection-bar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.api-selection-actions {
+  display: inline-flex;
+  gap: 6px;
+}

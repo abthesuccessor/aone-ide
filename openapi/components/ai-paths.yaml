@@ -1,0 +1,159 @@
+GetAiConfigurationStatus:
+  post:
+    operationId: getAiConfigurationStatus
+    tags: [ai]
+    summary: Read renderer-safe AI provider configuration metadata without exposing credentials.
+    x-aone-tauri-command: get_ai_configuration_status
+    responses:
+      '200':
+        description: Current AI provider configuration status.
+        content:
+          application/json:
+            schema:
+              $ref: ./ai.yaml#/AiConfigurationStatus
+      default:
+        $ref: ./developer.yaml#/IpcErrorResponse
+ConfigureHostedAi:
+  post:
+    operationId: configureHostedAi
+    tags: [ai]
+    summary: Install an explicitly submitted hosted-provider credential into backend-only memory.
+    x-aone-tauri-command: configure_hosted_ai
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./commands.yaml#/ConfigureHostedAiArgs
+    responses:
+      '200':
+        description: Installed hosted-provider status without credentials.
+        content:
+          application/json:
+            schema:
+              $ref: ./ai.yaml#/AiConfigurationStatus
+      default:
+        $ref: ./developer.yaml#/IpcErrorResponse
+ConfigureOllama:
+  post:
+    operationId: configureOllama
+    tags: [ai]
+    summary: Verify and install a loopback Ollama provider configuration.
+    x-aone-tauri-command: configure_ollama
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./commands.yaml#/ConfigureOllamaArgs
+    responses:
+      '200':
+        description: Installed local-provider status.
+        content:
+          application/json:
+            schema:
+              $ref: ./ai.yaml#/AiConfigurationStatus
+      default:
+        $ref: ./developer.yaml#/IpcErrorResponse
+ListAiCliAdapters:
+  post:
+    operationId: listAiCliAdapters
+    tags: [ai]
+    summary: Inspect supported AI CLI adapters with fixed bounded version and authentication probes.
+    x-aone-tauri-command: list_ai_cli_adapters
+    responses:
+      '200':
+        description: Installed and supported AI CLI adapter metadata.
+        content:
+          application/json:
+            schema:
+              $ref: ./ai.yaml#/AiCliAdapterStatuses
+      default:
+        $ref: ./developer.yaml#/IpcErrorResponse
+ConfigureAiCli:
+  post:
+    operationId: configureAiCli
+    tags: [ai]
+    summary: Select a verified supported AI CLI adapter for inference.
+    x-aone-tauri-command: configure_ai_cli
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./commands.yaml#/ConfigureAiCliArgs
+    responses:
+      '200':
+        description: Installed CLI-provider status.
+        content:
+          application/json:
+            schema:
+              $ref: ./ai.yaml#/AiConfigurationStatus
+      default:
+        $ref: ./developer.yaml#/IpcErrorResponse
+AiExplain:
+  post:
+    operationId: aiExplain
+    tags: [ai]
+    summary: Confirm and run the fixed explanation task over bounded evidence.
+    x-aone-tauri-command: ai_explain
+    x-aone-native-consent: confirmation
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./commands.yaml#/AiExplainArgs
+    responses:
+      '200':
+        description: Evidence-cited inferred explanation.
+        content:
+          application/json:
+            schema:
+              $ref: ./ai.yaml#/AiExplanation
+      default:
+        $ref: ./developer.yaml#/IpcErrorResponse
+AiExplainProjectEnvironment:
+  post:
+    operationId: aiExplainProjectEnvironment
+    tags: [ai, project-environment]
+    summary: Confirm and explain a backend-held deterministic project environment report.
+    x-aone-tauri-command: ai_explain_project_environment
+    x-aone-native-consent: confirmation
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./commands.yaml#/AiExplainProjectEnvironmentArgs
+    responses:
+      '200':
+        description: Evidence-cited inferred setup explanation.
+        content:
+          application/json:
+            schema:
+              $ref: ./ai.yaml#/AiExplanation
+      default:
+        $ref: ./developer.yaml#/IpcErrorResponse
+AiAskProjectAgent:
+  post:
+    operationId: aiAskProjectAgent
+    tags: [ai, project-environment]
+    summary: Ask one bounded project-guidance question using a retained environment report.
+    x-aone-tauri-command: ai_ask_project_agent
+    x-aone-native-consent: per-question-confirmation
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./commands.yaml#/AiProjectAgentArgs
+    responses:
+      '200':
+        description: Typed completed or expected-error outcome for the Project Agent question.
+        content:
+          application/json:
+            schema:
+              $ref: ./ai.yaml#/AiProjectAgentResponse
+      default:
+        $ref: ./developer.yaml#/IpcErrorResponse

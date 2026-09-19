@@ -1,0 +1,489 @@
+openapi: 3.1.0
+info:
+  title: Aone IDE Tauri IPC
+  version: 0.1.0
+  summary: Typed command contract between the React WebView and Rust core.
+  description: >-
+    Documentation paths represent Tauri invoke commands, not network HTTP
+    endpoints. Success payloads are serialized JSON values. Backend failures
+    reject the invocation with a serialized error string.
+servers:
+  - url: https://tauri.invalid/ipc
+    description: Non-routable documentation surrogate for Tauri IPC
+    x-aone-transport: tauri-command
+tags: [{ name: application }, { name: workspace }, { name: project-onboarding }, { name: graph }, { name: runtime }, { name: network }, { name: realtime }, { name: ai }, { name: editor }, { name: source-control }, { name: developer-tools }, { name: project-environment }]
+paths:
+  /commands/get-app-snapshot:
+    post:
+      operationId: getAppSnapshot
+      tags: [application]
+      summary: Read non-secret application and workspace state.
+      x-aone-tauri-command: get_app_snapshot
+      responses:
+        '200':
+          description: Current application snapshot.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppSnapshot'
+        default:
+          $ref: '#/components/responses/IpcError'
+  /commands/pick-and-open-workspace:
+    post:
+      operationId: pickAndOpenWorkspace
+      tags: [workspace]
+      summary: Open a backend-owned native folder picker and index the selection.
+      x-aone-tauri-command: pick_and_open_workspace
+      x-aone-native-consent: folder-picker
+      responses:
+        '200':
+          description: Installed workspace, or null when cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptionalWorkspaceSummary'
+        default:
+          $ref: '#/components/responses/IpcError'
+  /commands/pick-and-open-file:
+    post:
+      operationId: pickAndOpenFile
+      tags: [workspace]
+      summary: Pick a file, index its containing folder, and return its workspace-relative path.
+      x-aone-tauri-command: pick_and_open_file
+      x-aone-native-consent: file-picker
+      responses:
+        '200':
+          description: Installed workspace and selected relative path, or null when cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptionalOpenFileResult'
+        default:
+          $ref: '#/components/responses/IpcError'
+  /commands/pick-and-create-workspace-file:
+    post:
+      operationId: pickAndCreateWorkspaceFile
+      tags: [editor]
+      summary: Pick a new path inside the active workspace and create an empty indexed file.
+      x-aone-tauri-command: pick_and_create_workspace_file
+      x-aone-native-consent: save-picker
+      responses:
+        '200':
+          description: Newly created file, or null when cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptionalSourceFile'
+        default:
+          $ref: '#/components/responses/IpcError'
+  /commands/clone-github-repository: { $ref: ./components/onboarding-paths.yaml#/CloneGithubRepository }
+  /commands/create-documents-project: { $ref: ./components/onboarding-paths.yaml#/CreateDocumentsProject }
+  /commands/inspect-git-onboarding: { $ref: ./components/onboarding-paths.yaml#/InspectGitOnboarding }
+  /commands/rescan-workspace:
+    post:
+      operationId: rescanWorkspace
+      tags: [workspace]
+      summary: Perform one bounded full rescan of the open workspace.
+      x-aone-tauri-command: rescan_workspace
+      responses:
+        '200':
+          description: Refreshed workspace summary.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceSummary'
+        default:
+          $ref: '#/components/responses/IpcError'
+  /commands/get-workspace-files:
+    post:
+      operationId: getWorkspaceFiles
+      tags: [workspace]
+      summary: List indexed files with an optional substring query and limit.
+      x-aone-tauri-command: get_workspace_files
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetWorkspaceFilesArgs'
+      responses:
+        '200':
+          description: Bounded indexed file list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceFiles'
+        default:
+          $ref: '#/components/responses/IpcError'
+  /commands/search-workspace:
+    $ref: ./components/search-paths.yaml#/SearchWorkspace
+  /commands/read-workspace-file:
+    post:
+      operationId: readWorkspaceFile
+      tags: [workspace]
+      summary: Read one indexed, attested workspace source file.
+      x-aone-tauri-command: read_workspace_file
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadWorkspaceFileArgs'
+      responses:
+        '200':
+          description: Current bounded source content.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceFile'
+        default:
+          $ref: '#/components/responses/IpcError'
+  /commands/query-graph:
+    post:
+      operationId: queryGraph
+      tags: [graph]
+      summary: Query a bounded structural graph neighborhood.
+      x-aone-tauri-command: query_graph
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryGraphArgs'
+      responses:
+        '200':
+          description: Bounded graph snapshot with honest truncation state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphSnapshot'
+        default:
+          $ref: '#/components/responses/IpcError'
+  /commands/list-api-endpoints:
+    $ref: ./components/api-inventory-paths.yaml#/ListApiEndpoints
+  /commands/detect-run-profiles:
+    post:
+      operationId: detectRunProfiles
+      tags: [runtime]
+      summary: Detect backend-owned run profiles for the open workspace.
+      x-aone-tauri-command: detect_run_profiles
+      responses:
+        '200':
+          description: Registered launch profiles.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunProfiles'
+        default:
+          $ref: '#/components/responses/IpcError'
+  /commands/get-ai-configuration-status: { $ref: ./components/ai-paths.yaml#/GetAiConfigurationStatus }
+  /commands/configure-hosted-ai: { $ref: ./components/ai-paths.yaml#/ConfigureHostedAi }
+  /commands/configure-ollama: { $ref: ./components/ai-paths.yaml#/ConfigureOllama }
+  /commands/list-ai-cli-adapters: { $ref: ./components/ai-paths.yaml#/ListAiCliAdapters }
+  /commands/configure-ai-cli: { $ref: ./components/ai-paths.yaml#/ConfigureAiCli }
+  /commands/pick-and-load-provider-env:
+    post:
+      operationId: pickAndLoadProviderEnv
+      tags: [ai]
+      summary: Pick an environment file and retain provider names and values in Rust only.
+      x-aone-tauri-command: pick_and_load_env_file
+      x-aone-native-consent: file-picker
+      responses:
+        '200':
+          description: Loaded provider names, or null when cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptionalEnvLoadResult'
+        default:
+          $ref: '#/components/responses/IpcError'
+  /commands/pick-and-load-run-env:
+    post:
+      operationId: pickAndLoadRunEnv
+      tags: [runtime]
+      summary: Pick an environment file for the current workspace run profiles.
+      x-aone-tauri-command: pick_and_load_run_env_file
+      x-aone-native-consent: file-picker
+      responses:
+        '200':
+          description: Loaded non-provider names, or null when cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptionalEnvLoadResult'
+        default:
+          $ref: '#/components/responses/IpcError'
+  /commands/start-run: { $ref: ./components/runtime-paths.yaml#/StartRun }
+  /commands/stop-run: { $ref: ./components/runtime-paths.yaml#/StopRun }
+  /commands/list-runtime-events: { $ref: ./components/runtime-paths.yaml#/ListRuntimeEvents }
+  /commands/get-debug-session:
+    $ref: ./components/runtime-paths.yaml#/GetDebugSession
+  /commands/control-debug-session:
+    $ref: ./components/runtime-paths.yaml#/ControlDebugSession
+  /commands/start-otlp-receiver: { $ref: ./components/runtime-paths.yaml#/StartOtlpReceiver }
+  /commands/get-otlp-receiver: { $ref: ./components/runtime-paths.yaml#/GetOtlpReceiver }
+  /commands/stop-otlp-receiver: { $ref: ./components/runtime-paths.yaml#/StopOtlpReceiver }
+  /commands/delete-runtime-trace: { $ref: ./components/runtime-paths.yaml#/DeleteRuntimeTrace }
+  /commands/send-api-request:
+    post:
+      operationId: sendApiRequest
+      tags: [network]
+      summary: Send one bounded, destination-validated HTTP request.
+      x-aone-tauri-command: send_api_request
+      x-aone-native-consent: ip-literal-loopback-explicit-send-otherwise-confirmation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendApiRequestArgs'
+      responses:
+        '200':
+          description: Bounded and redacted response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        default:
+          $ref: '#/components/responses/IpcError'
+  /commands/connect-websocket:
+    post:
+      operationId: connectWebSocket
+      tags: [realtime]
+      summary: Confirm and open one bounded, address-validated WebSocket session.
+      x-aone-tauri-command: connect_websocket
+      x-aone-native-consent: confirmation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketConnectArgs'
+      responses:
+        '200':
+          description: Open session identity and negotiated protocol.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebSocketConnectResult'
+        default:
+          $ref: '#/components/responses/IpcError'
+  /commands/send-websocket-message:
+    post:
+      operationId: sendWebSocketMessage
+      tags: [realtime]
+      summary: Queue one bounded text or base64 message on an approved session.
+      x-aone-tauri-command: send_websocket_message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketSendArgs'
+      responses:
+        '200':
+          description: Whether the bounded session queue accepted the message.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebSocketSendResult'
+        default:
+          $ref: '#/components/responses/IpcError'
+  /commands/disconnect-websocket:
+    post:
+      operationId: disconnectWebSocket
+      tags: [realtime]
+      summary: Close and remove one WebSocket session.
+      x-aone-tauri-command: disconnect_websocket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketDisconnectArgs'
+      responses:
+        '200':
+          description: Whether an active session was disconnected.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebSocketDisconnectResult'
+        default:
+          $ref: '#/components/responses/IpcError'
+  /commands/ai-explain:
+    $ref: ./components/ai-paths.yaml#/AiExplain
+  /commands/get-project-environment-report:
+    $ref: ./components/project-environment-paths.yaml#/GetProjectEnvironmentReport
+  /commands/inspect-project-environment:
+    $ref: ./components/project-environment-paths.yaml#/InspectProjectEnvironment
+  /commands/ai-explain-project-environment:
+    $ref: ./components/ai-paths.yaml#/AiExplainProjectEnvironment
+  /commands/ai-ask-project-agent:
+    $ref: ./components/ai-paths.yaml#/AiAskProjectAgent
+  /commands/write-workspace-file:
+    $ref: ./components/developer-paths.yaml#/WriteWorkspaceFile
+  /commands/get-formatter-capabilities:
+    $ref: ./components/developer-paths.yaml#/GetFormatterCapabilities
+  /commands/format-document:
+    $ref: ./components/developer-paths.yaml#/FormatDocument
+  /commands/list-terminal-profiles:
+    $ref: ./components/developer-paths.yaml#/ListTerminalProfiles
+  /commands/open-terminal:
+    $ref: ./components/developer-paths.yaml#/OpenTerminal
+  /commands/write-terminal:
+    $ref: ./components/developer-paths.yaml#/WriteTerminal
+  /commands/resize-terminal:
+    $ref: ./components/developer-paths.yaml#/ResizeTerminal
+  /commands/close-terminal:
+    $ref: ./components/developer-paths.yaml#/CloseTerminal
+  /commands/get-git-status:
+    $ref: ./components/developer-paths.yaml#/GetGitStatus
+  /commands/get-git-diff:
+    $ref: ./components/developer-paths.yaml#/GetGitDiff
+  /commands/git-stage:
+    $ref: ./components/developer-paths.yaml#/GitStage
+  /commands/git-unstage:
+    $ref: ./components/developer-paths.yaml#/GitUnstage
+  /commands/git-commit:
+    $ref: ./components/developer-paths.yaml#/GitCommit
+  /commands/git-initialize:
+    $ref: ./components/developer-paths.yaml#/GitInitialize
+  /commands/list-tool-configurations:
+    $ref: ./components/developer-paths.yaml#/ListToolConfigurations
+  /commands/inspect-tool-configurations:
+    $ref: ./components/developer-paths.yaml#/InspectToolConfigurations
+  /commands/open-tool-configuration:
+    $ref: ./components/developer-paths.yaml#/OpenToolConfiguration
+components:
+  schemas:
+    AppSnapshot: { $ref: ./components/common.yaml#/AppSnapshot }
+    EnvLoadResult: { $ref: ./components/common.yaml#/EnvLoadResult }
+    CapabilityLevel: { $ref: ./components/workspace.yaml#/CapabilityLevel }
+    LanguageSummary: { $ref: ./components/workspace.yaml#/LanguageSummary }
+    WorkspaceSummary: { $ref: ./components/workspace.yaml#/WorkspaceSummary }
+    OpenFileResult: { $ref: ./components/workspace.yaml#/OpenFileResult }
+    OptionalOpenFileResult: { $ref: ./components/workspace.yaml#/OptionalOpenFileResult }
+    CloneGithubRepositoryRequest: { $ref: ./components/onboarding.yaml#/CloneGithubRepositoryRequest }
+    CreateDocumentsProjectRequest: { $ref: ./components/onboarding.yaml#/CreateDocumentsProjectRequest }
+    InspectGitOnboardingRequest: { $ref: ./components/onboarding.yaml#/InspectGitOnboardingRequest }
+    ProjectBootstrapAction: { $ref: ./components/onboarding.yaml#/ProjectBootstrapAction }
+    ProjectBootstrapResult: { $ref: ./components/onboarding.yaml#/ProjectBootstrapResult }
+    GitIdentitySource: { $ref: ./components/onboarding.yaml#/GitIdentitySource }
+    GitOnboardingIdentity: { $ref: ./components/onboarding.yaml#/GitOnboardingIdentity }
+    GitRemoteTransport: { $ref: ./components/onboarding.yaml#/GitRemoteTransport }
+    GitOnboardingRemote: { $ref: ./components/onboarding.yaml#/GitOnboardingRemote }
+    GitOnboardingPublicKey: { $ref: ./components/onboarding.yaml#/GitOnboardingPublicKey }
+    GitOnboardingReport: { $ref: ./components/onboarding.yaml#/GitOnboardingReport }
+    OptionalGitOnboardingReport: { $ref: ./components/onboarding.yaml#/OptionalGitOnboardingReport }
+    CloneGithubRepositoryArgs: { $ref: ./components/onboarding.yaml#/CloneGithubRepositoryArgs }
+    CreateDocumentsProjectArgs: { $ref: ./components/onboarding.yaml#/CreateDocumentsProjectArgs }
+    InspectGitOnboardingArgs: { $ref: ./components/onboarding.yaml#/InspectGitOnboardingArgs }
+    WorkspaceFile: { $ref: ./components/workspace.yaml#/WorkspaceFile }
+    SourceFile: { $ref: ./components/workspace.yaml#/SourceFile }
+    OptionalSourceFile: { $ref: ./components/workspace.yaml#/OptionalSourceFile }
+    ScanProgress: { $ref: ./components/workspace.yaml#/ScanProgress }
+    WorkspaceChanged: { $ref: ./components/workspace.yaml#/WorkspaceChanged }
+    EvidenceKind: { $ref: ./components/graph.yaml#/EvidenceKind }
+    SourceLocation: { $ref: ./components/graph.yaml#/SourceLocation }
+    GraphMetadata: { $ref: ./components/graph.yaml#/GraphMetadata }
+    GraphNode: { $ref: ./components/graph.yaml#/GraphNode }
+    GraphEdge: { $ref: ./components/graph.yaml#/GraphEdge }
+    GraphQuery: { $ref: ./components/graph.yaml#/GraphQuery }
+    GraphSnapshot: { $ref: ./components/graph.yaml#/GraphSnapshot }
+    RunProfile: { $ref: ./components/runtime.yaml#/RunProfile }
+    StartRunRequest: { $ref: ./components/runtime.yaml#/StartRunRequest }
+    StartRunResult: { $ref: ./components/runtime.yaml#/StartRunResult }
+    StopRunRequest: { $ref: ./components/runtime.yaml#/StopRunRequest }
+    StopRunResult: { $ref: ./components/runtime.yaml#/StopRunResult }
+    ListRuntimeEventsRequest: { $ref: ./components/runtime.yaml#/ListRuntimeEventsRequest }
+    RuntimeEvent: { $ref: ./components/runtime.yaml#/RuntimeEvent }
+    StartOtlpReceiverRequest: { $ref: ./components/runtime.yaml#/StartOtlpReceiverRequest }
+    OtlpReceiverLifecycle: { $ref: ./components/runtime.yaml#/OtlpReceiverLifecycle }
+    OtlpReceiverSnapshot: { $ref: ./components/runtime.yaml#/OtlpReceiverSnapshot }
+    DeleteRuntimeTraceRequest: { $ref: ./components/runtime.yaml#/DeleteRuntimeTraceRequest }
+    DeleteRuntimeTraceResult: { $ref: ./components/runtime.yaml#/DeleteRuntimeTraceResult }
+    DebugControlAction: { $ref: ./components/runtime.yaml#/DebugControlAction }
+    DebugSessionStatus: { $ref: ./components/runtime.yaml#/DebugSessionStatus }
+    DebugSafePointState: { $ref: ./components/runtime.yaml#/DebugSafePointState }
+    DebugEventKind: { $ref: ./components/runtime.yaml#/DebugEventKind }
+    DebugFlowStage: { $ref: ./components/runtime.yaml#/DebugFlowStage }
+    DebugBranchOutcome: { $ref: ./components/runtime.yaml#/DebugBranchOutcome }
+    DebugDataPreviewKind: { $ref: ./components/runtime.yaml#/DebugDataPreviewKind }
+    DebugDataField: { $ref: ./components/runtime.yaml#/DebugDataField }
+    DebugDataPreview: { $ref: ./components/runtime.yaml#/DebugDataPreview }
+    DebugSourceLocation: { $ref: ./components/runtime.yaml#/DebugSourceLocation }
+    DebugWorkflowEvent: { $ref: ./components/runtime.yaml#/DebugWorkflowEvent }
+    DebugActionCapability: { $ref: ./components/runtime.yaml#/DebugActionCapability }
+    DebugCapabilities: { $ref: ./components/runtime.yaml#/DebugCapabilities }
+    DebugSessionSnapshot: { $ref: ./components/runtime.yaml#/DebugSessionSnapshot }
+    GetDebugSessionRequest: { $ref: ./components/runtime.yaml#/GetDebugSessionRequest }
+    DebugControlRequest: { $ref: ./components/runtime.yaml#/DebugControlRequest }
+    DebugControlResult: { $ref: ./components/runtime.yaml#/DebugControlResult }
+    ApiHeader: { $ref: ./components/network.yaml#/ApiHeader }
+    ApiRequest: { $ref: ./components/network.yaml#/ApiRequest }
+    ApiResponse: { $ref: ./components/network.yaml#/ApiResponse }
+    WebSocketConnectRequest: { $ref: ./components/websocket.yaml#/WebSocketConnectRequest }
+    WebSocketConnectResult: { $ref: ./components/websocket.yaml#/WebSocketConnectResult }
+    WebSocketSendRequest: { $ref: ./components/websocket.yaml#/WebSocketSendRequest }
+    WebSocketSendResult: { $ref: ./components/websocket.yaml#/WebSocketSendResult }
+    WebSocketDisconnectRequest: { $ref: ./components/websocket.yaml#/WebSocketDisconnectRequest }
+    WebSocketDisconnectResult: { $ref: ./components/websocket.yaml#/WebSocketDisconnectResult }
+    WebSocketEvent: { $ref: ./components/websocket.yaml#/WebSocketEvent }
+    AiExplainRequest: { $ref: ./components/ai.yaml#/AiExplainRequest }
+    AiExplainProjectEnvironmentRequest: { $ref: ./components/ai.yaml#/AiExplainProjectEnvironmentRequest }
+    AiProjectAgentRequest: { $ref: ./components/ai.yaml#/AiProjectAgentRequest }
+    AiProjectAgentResponse: { $ref: ./components/ai.yaml#/AiProjectAgentResponse }
+    AiConfigurationStatus: { $ref: ./components/ai.yaml#/AiConfigurationStatus }
+    ConfigureHostedAiRequest: { $ref: ./components/ai.yaml#/ConfigureHostedAiRequest }
+    ConfigureOllamaRequest: { $ref: ./components/ai.yaml#/ConfigureOllamaRequest }
+    ConfigureAiCliRequest: { $ref: ./components/ai.yaml#/ConfigureAiCliRequest }
+    AiCliAdapterStatus: { $ref: ./components/ai.yaml#/AiCliAdapterStatus }
+    AiCliAdapterStatuses: { $ref: ./components/ai.yaml#/AiCliAdapterStatuses }
+    EvidenceReference: { $ref: ./components/ai.yaml#/EvidenceReference }
+    AiExplanation: { $ref: ./components/ai.yaml#/AiExplanation }
+    GetWorkspaceFilesArgs: { $ref: ./components/commands.yaml#/GetWorkspaceFilesArgs }
+    ReadWorkspaceFileArgs: { $ref: ./components/commands.yaml#/ReadWorkspaceFileArgs }
+    QueryGraphArgs: { $ref: ./components/commands.yaml#/QueryGraphArgs }
+    StartRunArgs: { $ref: ./components/commands.yaml#/StartRunArgs }
+    StopRunArgs: { $ref: ./components/commands.yaml#/StopRunArgs }
+    ListRuntimeEventsArgs: { $ref: ./components/commands.yaml#/ListRuntimeEventsArgs }
+    StartOtlpReceiverArgs: { $ref: ./components/commands.yaml#/StartOtlpReceiverArgs }
+    DeleteRuntimeTraceArgs: { $ref: ./components/commands.yaml#/DeleteRuntimeTraceArgs }
+    GetDebugSessionArgs: { $ref: ./components/commands.yaml#/GetDebugSessionArgs }
+    ControlDebugSessionArgs: { $ref: ./components/commands.yaml#/ControlDebugSessionArgs }
+    SendApiRequestArgs: { $ref: ./components/commands.yaml#/SendApiRequestArgs }
+    WebSocketConnectArgs: { $ref: ./components/commands.yaml#/WebSocketConnectArgs }
+    WebSocketSendArgs: { $ref: ./components/commands.yaml#/WebSocketSendArgs }
+    WebSocketDisconnectArgs: { $ref: ./components/commands.yaml#/WebSocketDisconnectArgs }
+    AiExplainArgs: { $ref: ./components/commands.yaml#/AiExplainArgs }
+    ConfigureHostedAiArgs: { $ref: ./components/commands.yaml#/ConfigureHostedAiArgs }
+    ConfigureOllamaArgs: { $ref: ./components/commands.yaml#/ConfigureOllamaArgs }
+    ConfigureAiCliArgs: { $ref: ./components/commands.yaml#/ConfigureAiCliArgs }
+    AiExplainProjectEnvironmentArgs: { $ref: ./components/commands.yaml#/AiExplainProjectEnvironmentArgs }
+    AiProjectAgentArgs: { $ref: ./components/commands.yaml#/AiProjectAgentArgs }
+    InspectProjectEnvironmentArgs: { $ref: ./components/commands.yaml#/InspectProjectEnvironmentArgs }
+    ProjectEnvironmentEvidence: { $ref: ./components/project-environment.yaml#/ProjectEnvironmentEvidence }
+    ProjectStack: { $ref: ./components/project-environment.yaml#/ProjectStack }
+    ProjectTool: { $ref: ./components/project-environment.yaml#/ProjectTool }
+    ProjectEnvironmentRecommendation: { $ref: ./components/project-environment.yaml#/ProjectEnvironmentRecommendation }
+    ProjectEnvironmentReport: { $ref: ./components/project-environment.yaml#/ProjectEnvironmentReport }
+    OptionalProjectEnvironmentReport: { $ref: ./components/project-environment.yaml#/OptionalProjectEnvironmentReport }
+    OptionalWorkspaceSummary: { $ref: ./components/commands.yaml#/OptionalWorkspaceSummary }
+    WorkspaceFiles: { $ref: ./components/commands.yaml#/WorkspaceFiles }
+    WorkspaceSearchRequest: { $ref: ./components/search.yaml#/WorkspaceSearchRequest }
+    WorkspaceSearchMatch: { $ref: ./components/search.yaml#/WorkspaceSearchMatch }
+    WorkspaceSearchResult: { $ref: ./components/search.yaml#/WorkspaceSearchResult }
+    SearchWorkspaceArgs: { $ref: ./components/commands.yaml#/SearchWorkspaceArgs }
+    RunProfiles:
+      $ref: ./components/commands.yaml#/RunProfiles
+    OptionalEnvLoadResult:
+      $ref: ./components/commands.yaml#/OptionalEnvLoadResult
+    RuntimeEvents:
+      $ref: ./components/commands.yaml#/RuntimeEvents
+  responses:
+    IpcError:
+      description: Tauri invocation rejected by the Rust authority boundary.
+      content:
+        text/plain:
+          schema:
+            $ref: ./components/common.yaml#/ErrorMessage

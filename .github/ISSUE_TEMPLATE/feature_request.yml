@@ -1,0 +1,25 @@
+name: Feature request
+description: Suggest a capability for Aone
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you unable to do today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behaviour
+      description: |
+        How should Aone behave? Note that Aone keeps analysis, evidence, and
+        inference strictly separated — proposals that let AI output become
+        recorded fact are unlikely to be accepted.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

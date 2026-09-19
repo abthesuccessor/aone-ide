@@ -1,0 +1,43 @@
+GetProjectEnvironmentReport:
+  post:
+    operationId: getProjectEnvironmentReport
+    tags: [project-environment]
+    summary: Return the retained environment report for the current workspace without inspecting again.
+    x-aone-tauri-command: get_project_environment_report
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./commands.yaml#/InspectProjectEnvironmentArgs
+    responses:
+      '200':
+        description: The current workspace's retained report, or null when no matching report exists.
+        content:
+          application/json:
+            schema:
+              $ref: ./project-environment.yaml#/OptionalProjectEnvironmentReport
+      default:
+        $ref: ./developer.yaml#/IpcErrorResponse
+InspectProjectEnvironment:
+  post:
+    operationId: inspectProjectEnvironment
+    tags: [project-environment]
+    summary: Confirm bounded names-only project hints and local tool inspection, then optionally run exact version probes.
+    x-aone-tauri-command: inspect_project_environment
+    x-aone-native-consent: two-stage-confirmation
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./commands.yaml#/InspectProjectEnvironmentArgs
+    responses:
+      '200':
+        description: Deterministic environment report, or null when inspection consent is declined.
+        content:
+          application/json:
+            schema:
+              $ref: ./project-environment.yaml#/OptionalProjectEnvironmentReport
+      default:
+        $ref: ./developer.yaml#/IpcErrorResponse

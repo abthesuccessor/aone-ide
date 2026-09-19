@@ -1,0 +1,142 @@
+.editor-tabs {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.editor-tab-shell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 0 1 168px;
+  min-width: 88px;
+  max-width: 190px;
+  height: 100%;
+  gap: 1px;
+  padding: 0 4px 0 0;
+  overflow: hidden;
+  border-right: 1px solid var(--line);
+  color: var(--text-muted);
+  background: var(--ink-900);
+  text-align: left;
+}
+
+.editor-tab-shell::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  content: "";
+  background: transparent;
+}
+
+.editor-tab-shell:hover,
+.editor-tab-shell.is-active {
+  color: var(--text);
+  background: var(--ink-950);
+}
+
+.editor-tab-shell.is-active::after {
+  background: var(--amber);
+}
+
+.editor-tab-target {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 6px;
+  padding: 0 2px 0 10px;
+  overflow: hidden;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  text-align: left;
+}
+
+.editor-tab-name {
+  min-width: 0;
+  overflow: hidden;
+  flex: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.editor-tab-shell.is-preview .editor-tab-name {
+  font-style: italic;
+}
+
+.editor-tab-dirty {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--text-secondary);
+}
+
+.editor-tab-action {
+  display: grid;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  color: var(--text-muted);
+  opacity: 0;
+  background: transparent;
+}
+
+.editor-tab-shell:hover .editor-tab-action,
+.editor-tab-shell:focus-within .editor-tab-action,
+.editor-tab-shell.is-active .editor-tab-close {
+  opacity: 1;
+}
+
+.editor-tab-action:hover:not(:disabled) {
+  color: var(--paper);
+  background: var(--ink-700);
+}
+
+.source-actions {
+  display: flex;
+  gap: 3px;
+}
+
+.source-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 23px;
+  padding: 0 6px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  color: var(--text-muted);
+  background: transparent;
+  font-size: 9px;
+}
+
+.source-actions button:hover:not(:disabled) {
+  border-color: var(--line-strong);
+  color: var(--text);
+  background: var(--ink-750);
+}
+
+:root[data-theme="light-modern"] .source-header,
+:root[data-theme="light-modern"] .workbench-header {
+  background: var(--ink-900);
+}
+
+@media (max-width: 1120px) {
+  .source-actions button {
+    width: 25px;
+    overflow: hidden;
+    padding: 0 5px;
+    font-size: 0;
+  }
+}

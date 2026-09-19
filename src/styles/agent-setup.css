@@ -1,0 +1,452 @@
+.agent-setup-scroll {
+  min-height: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+.agent-setup-connection {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+  min-height: 45px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--line);
+  background: var(--ink-850);
+}
+
+.agent-setup-connection > svg,
+.agent-setup-start > svg,
+.agent-setup-evidence > header svg,
+.agent-setup-plan > header svg,
+.agent-project-chat > header svg,
+.agent-chat-empty > svg {
+  color: var(--amber-strong);
+}
+
+.agent-setup-connection > div {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.agent-setup-connection strong,
+.agent-setup-last-action strong {
+  color: var(--paper);
+  font-size: 11px;
+}
+
+.agent-setup-connection > div > span,
+.agent-setup-last-action span,
+.agent-setup-boundary {
+  color: var(--text-muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.agent-connection-state,
+.agent-report-state {
+  padding: 2px 5px;
+  border: 1px solid var(--line-strong);
+  color: var(--text-muted);
+  background: var(--ink-900);
+  font-size: 9px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.agent-connection-state.is-ready {
+  border-color: color-mix(in srgb, var(--observed) 45%, var(--line));
+  color: var(--observed);
+}
+
+.agent-connection-state.is-missing {
+  border-color: color-mix(in srgb, var(--inferred) 45%, var(--line));
+  color: var(--inferred);
+}
+
+.agent-connection-action {
+  min-height: 24px;
+  padding: 0 6px;
+  border: 1px solid color-mix(in srgb, var(--inferred) 45%, var(--line));
+  color: var(--inferred);
+  background: var(--ink-900);
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.agent-connection-action:hover:not(:disabled) {
+  color: var(--paper);
+  background: var(--ink-750);
+}
+
+.agent-responsibility-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-bottom: 1px solid var(--line);
+}
+
+.agent-responsibility-grid > div {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  min-width: 0;
+  padding: 7px 8px;
+}
+
+.agent-responsibility-grid > div + div {
+  border-left: 1px solid var(--line);
+}
+
+.agent-responsibility-grid strong {
+  color: var(--text-secondary);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.agent-responsibility-grid span {
+  color: var(--text-muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.agent-setup-start {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 14px 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.agent-setup-start.is-restoring {
+  min-height: 128px;
+  justify-content: center;
+}
+
+.agent-setup-start > strong {
+  color: var(--paper);
+  font-size: 12px;
+}
+
+.agent-setup-start > p,
+.agent-setup-step > p,
+.agent-step-approval > p,
+.agent-setup-empty-plan,
+.agent-chat-contract {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.agent-setup-start > button {
+  width: 100%;
+  min-height: 29px;
+  font-size: 11px;
+}
+
+.agent-setup-notice {
+  width: 100%;
+  padding: 7px;
+  border: 1px solid var(--line);
+  color: var(--text-secondary);
+  background: var(--ink-850);
+  font-size: 10px;
+}
+
+.agent-readiness-timeline,
+.agent-plan-list,
+.agent-chat-log {
+  display: grid;
+  width: 100%;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.agent-readiness-timeline > li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 17px minmax(0, 1fr);
+  gap: 6px;
+  min-height: 37px;
+  color: var(--text-muted);
+}
+
+.agent-readiness-timeline > li:not(:last-child)::after {
+  position: absolute;
+  top: 16px;
+  bottom: 0;
+  left: 6px;
+  width: 1px;
+  content: "";
+  background: var(--line-strong);
+}
+
+.agent-readiness-timeline > li.is-complete > svg {
+  color: var(--observed);
+}
+
+.agent-readiness-timeline > li > span:last-child {
+  display: grid;
+  align-content: start;
+  gap: 1px;
+  padding-bottom: 7px;
+}
+
+.agent-readiness-timeline strong {
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+
+.agent-readiness-timeline small {
+  color: var(--text-muted);
+  font-size: 9px;
+}
+
+.agent-timeline-index,
+.agent-step-index {
+  display: grid;
+  width: 14px;
+  height: 14px;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  color: var(--text-muted);
+  background: var(--ink-900);
+  font: 9px var(--mono);
+}
+
+.agent-setup-evidence,
+.agent-setup-plan,
+.agent-project-chat {
+  display: grid;
+  gap: 7px;
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.agent-setup-evidence > header,
+.agent-setup-plan > header,
+.agent-project-chat > header {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-secondary);
+}
+
+.agent-setup-evidence > header strong,
+.agent-setup-plan > header strong,
+.agent-project-chat > header strong {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.agent-setup-plan > header small,
+.agent-project-chat > header small {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agent-report-state {
+  color: var(--observed);
+}
+
+.agent-evidence-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--line);
+  background: var(--ink-850);
+}
+
+.agent-evidence-metrics > span {
+  display: grid;
+  gap: 1px;
+  padding: 5px 6px;
+  color: var(--paper);
+  font: 12px var(--mono);
+}
+
+.agent-evidence-metrics > span + span {
+  border-left: 1px solid var(--line);
+}
+
+.agent-evidence-metrics small {
+  color: var(--text-muted);
+  font: 9px var(--sans);
+}
+
+.agent-stack-summary,
+.agent-step-evidence,
+.agent-chat-evidence {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.agent-stack-summary > span,
+.agent-step-evidence code,
+.agent-chat-evidence span {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 2px 4px;
+  border: 1px solid var(--line);
+  color: var(--text-secondary);
+  background: var(--ink-850);
+  font: 9px var(--mono);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agent-stack-summary small {
+  margin-left: 4px;
+  color: var(--text-muted);
+  font-size: 8px;
+}
+
+.agent-inline-action {
+  display: inline-flex;
+  min-height: 25px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 7px;
+  border: 1px solid var(--line-strong);
+  color: var(--text-secondary);
+  background: var(--ink-850);
+  font-size: 10px;
+}
+
+.agent-inline-action:hover:not(:disabled) {
+  color: var(--paper);
+  background: var(--ink-750);
+}
+
+.agent-setup-step {
+  display: grid;
+  gap: 5px;
+  padding: 7px 0;
+  border-top: 1px solid var(--line);
+}
+
+.agent-setup-step:first-child {
+  border-top: 0;
+}
+
+.agent-step-heading {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 5px;
+}
+
+.agent-step-heading > strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--paper);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agent-step-heading > span:last-child {
+  color: var(--text-muted);
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.agent-setup-step.state-already-applied .agent-step-index {
+  border-color: color-mix(in srgb, var(--observed) 45%, var(--line));
+  color: var(--observed);
+}
+
+.agent-setup-step.state-awaiting-approval .agent-step-index {
+  border-color: color-mix(in srgb, var(--amber) 45%, var(--line));
+  color: var(--amber-strong);
+}
+
+.agent-setup-step > .agent-inline-action {
+  width: 100%;
+}
+
+.agent-step-approval {
+  display: grid;
+  gap: 6px;
+  padding: 7px;
+  border: 1px solid color-mix(in srgb, var(--amber) 70%, var(--line));
+  background: var(--amber-wash);
+}
+
+.agent-step-approval > div {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 5px;
+}
+
+.agent-step-approval button {
+  min-height: 27px;
+  border: 1px solid var(--line-strong);
+  color: var(--text-secondary);
+  background: var(--ink-850);
+  font-size: 10px;
+}
+
+.agent-step-approval button.primary-button {
+  color: var(--workbench-primary-foreground);
+  background: var(--amber);
+}
+
+.agent-setup-last-action {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px;
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--line);
+  background: var(--ink-850);
+  font-family: var(--mono);
+}
+
+.agent-setup-boundary {
+  display: grid;
+  grid-template-columns: 15px minmax(0, 1fr);
+  gap: 5px;
+  margin: 0;
+  padding: 8px;
+}
+
+.agent-setup-boundary svg {
+  color: var(--text-muted);
+}
+
+.agent-setup-panel :where(button, textarea):focus-visible {
+  outline: 1px solid var(--focus);
+  outline-offset: 1px;
+}
+
+@media (max-width: 880px) {
+  .agent-responsibility-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .agent-responsibility-grid > div + div {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agent-setup-panel .spin {
+    animation: none;
+  }
+}

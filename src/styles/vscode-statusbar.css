@@ -1,0 +1,56 @@
+/* Compact status chrome mirrors VS Code while exposing Aone-local facts. */
+.statusbar {
+  min-height: var(--vscode-statusbar-height);
+  height: var(--vscode-statusbar-height);
+  justify-content: space-between;
+  gap: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+  color: var(--text-secondary);
+  background: var(--workbench-titlebar);
+  font-family: var(--sans);
+  font-size: 11px;
+}
+
+.statusbar-group {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  align-items: center;
+}
+
+.statusbar-group-right {
+  justify-content: flex-end;
+}
+
+.statusbar-item {
+  display: inline-flex;
+  min-width: 0;
+  height: 100%;
+  align-items: center;
+  gap: 4px;
+  padding: 0 7px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.statusbar-item:hover {
+  color: var(--paper);
+  background: var(--vscode-hover-overlay);
+}
+
+.statusbar-workspace {
+  max-width: min(38vw, 540px);
+}
+
+.status-connection i {
+  width: 6px;
+  height: 6px;
+}
+
+@media (max-width: 1200px) {
+  .statusbar-workspace {
+    max-width: 28vw;
+  }
+}

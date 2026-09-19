@@ -1,0 +1,117 @@
+CapabilityLevel:
+  type: string
+  enum: [textOnly, syntaxOnly, semantic, runtime]
+LanguageSummary:
+  type: object
+  additionalProperties: false
+  required: [language, fileCount, capability]
+  properties:
+    language:
+      type: string
+    fileCount:
+      type: integer
+      minimum: 0
+    capability:
+      $ref: '#/CapabilityLevel'
+WorkspaceSummary:
+  type: object
+  additionalProperties: false
+  required: [id, name, rootPath, fileCount, nodeCount, edgeCount, languages, lastScannedAt]
+  properties:
+    id:
+      type: string
+    name:
+      type: string
+    rootPath:
+      type: string
+    fileCount:
+      type: integer
+      minimum: 0
+    nodeCount:
+      type: integer
+      minimum: 0
+    edgeCount:
+      type: integer
+      minimum: 0
+    languages:
+      type: array
+      items:
+        $ref: '#/LanguageSummary'
+    lastScannedAt:
+      type: string
+OpenFileResult:
+  type: object
+  additionalProperties: false
+  required: [workspace, relativePath]
+  properties:
+    workspace:
+      $ref: '#/WorkspaceSummary'
+    relativePath:
+      type: string
+OptionalOpenFileResult:
+  oneOf:
+    - $ref: '#/OpenFileResult'
+    - type: 'null'
+WorkspaceFile:
+  type: object
+  additionalProperties: false
+  required: [id, relativePath, language, capability, sizeBytes, contentHash, modifiedAt, parseErrors]
+  properties:
+    id:
+      type: string
+    relativePath:
+      type: string
+    language:
+      type: string
+    capability:
+      $ref: '#/CapabilityLevel'
+    sizeBytes:
+      type: integer
+      minimum: 0
+    contentHash:
+      type: string
+    modifiedAt:
+      type: string
+    parseErrors:
+      type: boolean
+SourceFile:
+  type: object
+  additionalProperties: false
+  required: [relativePath, language, content, contentHash]
+  properties:
+    relativePath:
+      type: string
+    language:
+      type: string
+    content:
+      type: string
+    contentHash:
+      type: string
+OptionalSourceFile:
+  oneOf:
+    - $ref: '#/SourceFile'
+    - type: 'null'
+ScanProgress:
+  type: object
+  additionalProperties: false
+  required: [phase, completed, total]
+  properties:
+    phase:
+      type: string
+    completed:
+      type: integer
+      minimum: 0
+    total:
+      type: integer
+      minimum: 0
+    currentPath:
+      type: string
+WorkspaceChanged:
+  type: object
+  additionalProperties: false
+  required: [paths]
+  properties:
+    paths:
+      type: array
+      items:
+        type: string

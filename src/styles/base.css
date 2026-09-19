@@ -1,0 +1,142 @@
+
+:root {
+  color-scheme: dark;
+  --workbench-editor: #1f1f1f;
+  --workbench-sidebar: #181818;
+  --workbench-surface: #202020;
+  --workbench-titlebar: #181818;
+  --workbench-activitybar: #181818;
+  --workbench-input: #313131;
+  --workbench-hover: #2a2d2e;
+  --workbench-border: #2b2b2b;
+  --workbench-border-strong: #454545;
+  --workbench-foreground: #cccccc;
+  --workbench-foreground-secondary: #b8b8b8;
+  --workbench-foreground-muted: #858585;
+  --workbench-foreground-emphasis: #f0f0f0;
+  --workbench-primary: #007acc;
+  --workbench-primary-hover: #1f8ad2;
+  --workbench-primary-muted: #007acc22;
+  --workbench-primary-foreground: #ffffff;
+  --workbench-success: #4ec9b0;
+  --workbench-success-muted: #4ec9b01c;
+  --workbench-warning: #dcdcaa;
+  --workbench-error: #f48771;
+  --workbench-error-muted: #f487711a;
+  --workbench-focus: #007fd4;
+  --workbench-selection: #264f78;
+  --workbench-shadow: #00000066;
+  --workbench-scrollbar: #79797966;
+  --ink-950: var(--workbench-editor);
+  --ink-900: var(--workbench-sidebar);
+  --ink-850: var(--workbench-surface);
+  --ink-800: var(--workbench-titlebar);
+  --ink-750: var(--workbench-hover);
+  --ink-700: var(--workbench-input);
+  --line: var(--workbench-border);
+  --line-strong: var(--workbench-border-strong);
+  --text: var(--workbench-foreground);
+  --text-secondary: var(--workbench-foreground-secondary);
+  --text-muted: var(--workbench-foreground-muted);
+  --paper: var(--workbench-foreground-emphasis);
+  --paper-muted: var(--workbench-foreground-secondary);
+  --amber: var(--workbench-primary);
+  --amber-strong: var(--workbench-primary-hover);
+  --amber-wash: var(--workbench-primary-muted);
+  --observed: var(--workbench-success);
+  --observed-wash: var(--workbench-success-muted);
+  --inferred: var(--workbench-warning);
+  --danger: var(--workbench-error);
+  --danger-wash: var(--workbench-error-muted);
+  --focus: var(--workbench-focus);
+  --radius: 5px;
+  --mono: "SFMono-Regular", ui-monospace, Menlo, Monaco, Consolas, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  color: var(--text);
+  background: var(--ink-950);
+  font-family: var(--sans);
+  font-size: 12px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+button,
+input,
+select,
+textarea {
+  color: inherit;
+  font: inherit;
+}
+
+button,
+select {
+  user-select: none;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -1px;
+}
+
+button:disabled,
+select:disabled {
+  cursor: not-allowed;
+  opacity: 0.38;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  color: var(--workbench-primary-foreground);
+  background: var(--workbench-selection);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: var(--workbench-scrollbar);
+  background-clip: padding-box;
+}

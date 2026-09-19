@@ -1,0 +1,284 @@
+WriteWorkspaceFile:
+  post:
+    operationId: writeWorkspaceFile
+    tags: [editor]
+    summary: Atomically save one identified-workspace file after optimistic hash validation.
+    x-aone-tauri-command: write_workspace_file
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ./developer.yaml#/WriteWorkspaceFileArgs }
+    responses:
+      '200':
+        description: Saved and re-indexed source.
+        content:
+          application/json:
+            schema: { $ref: ./workspace.yaml#/SourceFile }
+      default: { $ref: ./developer.yaml#/IpcErrorResponse }
+GetFormatterCapabilities:
+  post:
+    operationId: getFormatterCapabilities
+    tags: [editor]
+    summary: Detect the fixed local formatter allowlist.
+    x-aone-tauri-command: get_formatter_capabilities
+    responses:
+      '200':
+        description: Built-in and detected formatter capabilities.
+        content:
+          application/json:
+            schema: { $ref: ./developer.yaml#/FormatterCapabilities }
+      default: { $ref: ./developer.yaml#/IpcErrorResponse }
+FormatDocument:
+  post:
+    operationId: formatDocument
+    tags: [editor]
+    summary: Format one identified-workspace document with a bounded allowlisted plan or safe normalizer.
+    x-aone-tauri-command: format_document
+    x-aone-native-consent: confirmation
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ./developer.yaml#/FormatDocumentArgs }
+    responses:
+      '200':
+        description: Formatted in-memory source without writing it.
+        content:
+          application/json:
+            schema: { $ref: ./developer.yaml#/FormatDocumentResult }
+      default: { $ref: ./developer.yaml#/IpcErrorResponse }
+ListTerminalProfiles:
+  post:
+    operationId: listTerminalProfiles
+    tags: [runtime]
+    summary: List canonical backend-detected interactive shells.
+    x-aone-tauri-command: list_terminal_profiles
+    responses:
+      '200':
+        description: Approved shell profile identifiers.
+        content:
+          application/json:
+            schema: { $ref: ./developer.yaml#/TerminalProfiles }
+      default: { $ref: ./developer.yaml#/IpcErrorResponse }
+OpenTerminal:
+  post:
+    operationId: openTerminal
+    tags: [runtime]
+    summary: Confirm and open one isolated workspace PTY session.
+    x-aone-tauri-command: open_terminal
+    x-aone-native-consent: confirmation
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ./developer.yaml#/TerminalOpenArgs }
+    responses:
+      '200':
+        description: Open PTY session metadata.
+        content:
+          application/json:
+            schema: { $ref: ./developer.yaml#/TerminalOpenResult }
+      default: { $ref: ./developer.yaml#/IpcErrorResponse }
+WriteTerminal:
+  post:
+    operationId: writeTerminal
+    tags: [runtime]
+    summary: Write one bounded text or base64 chunk to an active PTY.
+    x-aone-tauri-command: write_terminal
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ./developer.yaml#/TerminalWriteArgs }
+    responses:
+      '200':
+        description: Whether the terminal accepted the input.
+        content:
+          application/json:
+            schema: { $ref: ./developer.yaml#/TerminalActionResult }
+      default: { $ref: ./developer.yaml#/IpcErrorResponse }
+ResizeTerminal:
+  post:
+    operationId: resizeTerminal
+    tags: [runtime]
+    summary: Resize the active PTY inside backend bounds.
+    x-aone-tauri-command: resize_terminal
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ./developer.yaml#/TerminalResizeArgs }
+    responses:
+      '200':
+        description: Whether the terminal accepted the resize.
+        content:
+          application/json:
+            schema: { $ref: ./developer.yaml#/TerminalActionResult }
+      default: { $ref: ./developer.yaml#/IpcErrorResponse }
+CloseTerminal:
+  post:
+    operationId: closeTerminal
+    tags: [runtime]
+    summary: Close the active PTY and process group.
+    x-aone-tauri-command: close_terminal
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ./developer.yaml#/TerminalCloseArgs }
+    responses:
+      '200':
+        description: Whether an active terminal was closed.
+        content:
+          application/json:
+            schema: { $ref: ./developer.yaml#/TerminalActionResult }
+      default: { $ref: ./developer.yaml#/IpcErrorResponse }
+GetGitStatus:
+  post:
+    operationId: getGitStatus
+    tags: [source-control]
+    summary: Read bounded status from an exact-root local Git repository.
+    x-aone-tauri-command: get_git_status
+    responses:
+      '200':
+        description: Local repository and changed-file state.
+        content:
+          application/json:
+            schema: { $ref: ./developer.yaml#/GitStatusResult }
+      default: { $ref: ./developer.yaml#/IpcErrorResponse }
+GetGitDiff:
+  post:
+    operationId: getGitDiff
+    tags: [source-control]
+    summary: Read one validated file's bounded textual diff with external drivers disabled.
+    x-aone-tauri-command: get_git_diff
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ./developer.yaml#/GitDiffArgs }
+    responses:
+      '200':
+        description: Bounded working-tree or staged diff.
+        content:
+          application/json:
+            schema: { $ref: ./developer.yaml#/GitDiffResult }
+      default: { $ref: ./developer.yaml#/IpcErrorResponse }
+GitStage:
+  post:
+    operationId: gitStage
+    tags: [source-control]
+    summary: Confirm and stage bounded workspace-relative paths.
+    x-aone-tauri-command: git_stage
+    x-aone-native-consent: confirmation
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ./developer.yaml#/GitPathsArgs }
+    responses:
+      '200':
+        description: Local mutation result.
+        content:
+          application/json:
+            schema: { $ref: ./developer.yaml#/GitMutationResult }
+      default: { $ref: ./developer.yaml#/IpcErrorResponse }
+GitUnstage:
+  post:
+    operationId: gitUnstage
+    tags: [source-control]
+    summary: Confirm and unstage bounded workspace-relative paths.
+    x-aone-tauri-command: git_unstage
+    x-aone-native-consent: confirmation
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ./developer.yaml#/GitPathsArgs }
+    responses:
+      '200':
+        description: Local mutation result.
+        content:
+          application/json:
+            schema: { $ref: ./developer.yaml#/GitMutationResult }
+      default: { $ref: ./developer.yaml#/IpcErrorResponse }
+GitCommit:
+  post:
+    operationId: gitCommit
+    tags: [source-control]
+    summary: Confirm and create one local commit without hooks, signing, or remotes.
+    x-aone-tauri-command: git_commit
+    x-aone-native-consent: confirmation
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ./developer.yaml#/GitCommitArgs }
+    responses:
+      '200':
+        description: Local commit result.
+        content:
+          application/json:
+            schema: { $ref: ./developer.yaml#/GitMutationResult }
+      default: { $ref: ./developer.yaml#/IpcErrorResponse }
+GitInitialize:
+  post:
+    operationId: gitInitialize
+    tags: [source-control]
+    summary: Confirm and initialize a local repository without a remote.
+    x-aone-tauri-command: git_initialize
+    x-aone-native-consent: confirmation
+    responses:
+      '200':
+        description: Local initialization result.
+        content:
+          application/json:
+            schema: { $ref: ./developer.yaml#/GitMutationResult }
+      default: { $ref: ./developer.yaml#/IpcErrorResponse }
+ListToolConfigurations:
+  post:
+    operationId: listToolConfigurations
+    tags: [developer-tools]
+    summary: List static, non-secret metadata for the fixed AI-tool artifact catalog.
+    x-aone-tauri-command: list_tool_configurations
+    responses:
+      '200':
+        description: Non-secret configuration descriptors.
+        content:
+          application/json:
+            schema: { $ref: ./developer.yaml#/ToolConfigurations }
+      default: { $ref: ./developer.yaml#/IpcErrorResponse }
+InspectToolConfigurations:
+  post:
+    operationId: inspectToolConfigurations
+    tags: [developer-tools]
+    summary: Confirm and inspect fixed configuration and CLI locations without reading contents or executing tools.
+    x-aone-tauri-command: inspect_tool_configurations
+    x-aone-native-consent: confirmation
+    responses:
+      '200':
+        description: Inspected non-secret configuration descriptors.
+        content:
+          application/json:
+            schema: { $ref: ./developer.yaml#/ToolConfigurations }
+      default: { $ref: ./developer.yaml#/IpcErrorResponse }
+OpenToolConfiguration:
+  post:
+    operationId: openToolConfiguration
+    tags: [developer-tools]
+    summary: Confirm, optionally create an empty template, and open a known config externally.
+    x-aone-tauri-command: open_tool_configuration
+    x-aone-native-consent: confirmation
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: ./developer.yaml#/ToolConfigurationOpenArgs }
+    responses:
+      '200':
+        description: External editor launch result without file contents.
+        content:
+          application/json:
+            schema: { $ref: ./developer.yaml#/ToolConfigurationOpenResult }
+      default: { $ref: ./developer.yaml#/IpcErrorResponse }

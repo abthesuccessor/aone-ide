@@ -1,0 +1,45 @@
+name: Bug report
+description: Something in Aone behaves incorrectly
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Aone is local-first. Please do not paste API keys, tokens, `.env`
+        contents, or absolute paths that identify you.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what occurred instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open workspace ...
+        2. Run ...
+        3. See ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Aone version or commit
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: macOS version and chip
+      placeholder: "macOS 15.4, Apple M2"
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Toolchain
+      description: Output of `node -v`, `npm -v`, and `rustc --version`.
+      render: shell

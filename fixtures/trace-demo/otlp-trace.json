@@ -1,0 +1,117 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          { "key": "service.name", "value": { "stringValue": "aone-trace-demo" } },
+          { "key": "service.namespace", "value": { "stringValue": "fixtures" } }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "spans": [
+            {
+              "traceId": "5b8efff798038103d269b633813fc60c",
+              "spanId": "1111111111111111",
+              "name": "frontend load shipment",
+              "kind": 1,
+              "startTimeUnixNano": "1787187600000000000",
+              "endTimeUnixNano": "1787187600004000000",
+              "attributes": [
+                { "key": "aone.flow.stage", "value": { "stringValue": "trigger" } },
+                { "key": "code.function.name", "value": { "stringValue": "loadShipment" } },
+                { "key": "code.file.path", "value": { "stringValue": "src/client.js" } },
+                { "key": "code.line.number", "value": { "intValue": "1" } }
+              ],
+              "status": { "code": 1 }
+            },
+            {
+              "traceId": "5b8efff798038103d269b633813fc60c",
+              "spanId": "2222222222222222",
+              "parentSpanId": "1111111111111111",
+              "name": "GET /api/shipments/:shipmentId",
+              "kind": 2,
+              "startTimeUnixNano": "1787187600005000000",
+              "endTimeUnixNano": "1787187600025000000",
+              "attributes": [
+                { "key": "aone.flow.stage", "value": { "stringValue": "api" } },
+                { "key": "http.request.method", "value": { "stringValue": "GET" } },
+                { "key": "http.route", "value": { "stringValue": "/api/shipments/{shipmentId}" } },
+                { "key": "code.function.name", "value": { "stringValue": "shipmentRoute" } },
+                { "key": "code.file.path", "value": { "stringValue": "src/server.js" } },
+                { "key": "code.line.number", "value": { "intValue": "8" } }
+              ],
+              "status": { "code": 1 }
+            },
+            {
+              "traceId": "5b8efff798038103d269b633813fc60c",
+              "spanId": "3333333333333333",
+              "parentSpanId": "2222222222222222",
+              "name": "shipment service",
+              "kind": 1,
+              "startTimeUnixNano": "1787187600007000000",
+              "endTimeUnixNano": "1787187600021000000",
+              "attributes": [
+                { "key": "aone.flow.stage", "value": { "stringValue": "service" } },
+                { "key": "code.function.name", "value": { "stringValue": "getShipment" } },
+                { "key": "code.file.path", "value": { "stringValue": "src/shipment-service.js" } },
+                { "key": "code.line.number", "value": { "intValue": "6" } }
+              ],
+              "status": { "code": 1 }
+            },
+            {
+              "traceId": "5b8efff798038103d269b633813fc60c",
+              "spanId": "4444444444444444",
+              "parentSpanId": "3333333333333333",
+              "name": "shipment repository",
+              "kind": 1,
+              "startTimeUnixNano": "1787187600009000000",
+              "endTimeUnixNano": "1787187600019000000",
+              "attributes": [
+                { "key": "aone.flow.stage", "value": { "stringValue": "backend" } },
+                { "key": "code.function.name", "value": { "stringValue": "ShipmentRepository.findById" } },
+                { "key": "code.file.path", "value": { "stringValue": "src/shipment-repository.js" } },
+                { "key": "code.line.number", "value": { "intValue": "16" } }
+              ],
+              "status": { "code": 1 }
+            },
+            {
+              "traceId": "5b8efff798038103d269b633813fc60c",
+              "spanId": "5555555555555555",
+              "parentSpanId": "4444444444444444",
+              "name": "SELECT shipments",
+              "kind": 1,
+              "startTimeUnixNano": "1787187600010000000",
+              "endTimeUnixNano": "1787187600017000000",
+              "attributes": [
+                { "key": "aone.flow.stage", "value": { "stringValue": "data" } },
+                { "key": "db.system.name", "value": { "stringValue": "sqlite" } },
+                { "key": "db.operation.name", "value": { "stringValue": "SELECT" } },
+                { "key": "db.collection.name", "value": { "stringValue": "shipments" } },
+                { "key": "code.file.path", "value": { "stringValue": "src/shipment-repository.js" } },
+                { "key": "code.line.number", "value": { "intValue": "26" } }
+              ],
+              "status": { "code": 1 }
+            },
+            {
+              "traceId": "5b8efff798038103d269b633813fc60c",
+              "spanId": "6666666666666666",
+              "parentSpanId": "3333333333333333",
+              "name": "write shipment response",
+              "kind": 1,
+              "startTimeUnixNano": "1787187600022000000",
+              "endTimeUnixNano": "1787187600024000000",
+              "attributes": [
+                { "key": "aone.flow.stage", "value": { "stringValue": "response" } },
+                { "key": "code.function.name", "value": { "stringValue": "writeShipmentResponse" } },
+                { "key": "code.file.path", "value": { "stringValue": "src/server.js" } },
+                { "key": "code.line.number", "value": { "intValue": "19" } }
+              ],
+              "status": { "code": 1 }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

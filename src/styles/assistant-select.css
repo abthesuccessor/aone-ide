@@ -1,0 +1,102 @@
+.assistant-select-trigger:focus-visible {
+  outline: 1px solid var(--focus);
+  outline-offset: -1px;
+}
+
+.assistant-select-label {
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 620;
+}
+
+.assistant-select-trigger {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 28px;
+  align-items: center;
+  width: 100%;
+  height: 31px;
+  min-width: 0;
+  padding: 0 0 0 9px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--paper);
+  background: var(--ink-950);
+  font-size: 10px;
+  text-align: left;
+}
+
+.assistant-select-trigger:hover:not(:disabled),
+.assistant-select-trigger[data-popup-open] {
+  border-color: color-mix(in srgb, var(--focus) 60%, var(--line-strong));
+  background: var(--ink-850);
+}
+
+.assistant-select-trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.assistant-select-trigger-icon {
+  display: grid;
+  height: 100%;
+  place-items: center;
+  border-left: 1px solid var(--line);
+  color: var(--text-muted);
+}
+
+.assistant-select-trigger[data-popup-open] .assistant-select-trigger-icon svg {
+  transform: rotate(180deg);
+}
+
+.assistant-select-positioner {
+  z-index: 130;
+  width: var(--anchor-width);
+  max-width: var(--available-width);
+}
+
+.assistant-select-popup {
+  width: var(--anchor-width);
+  max-height: min(220px, var(--available-height));
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--ink-900);
+  box-shadow: 0 10px 30px var(--workbench-shadow);
+}
+
+.assistant-select-list {
+  display: grid;
+  gap: 2px;
+  padding: 4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.assistant-select-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 18px;
+  align-items: center;
+  min-height: 29px;
+  padding: 0 6px 0 8px;
+  border-radius: calc(var(--radius) - 1px);
+  color: var(--text-secondary);
+  font-size: 10px;
+  outline: 0;
+  cursor: default;
+  user-select: none;
+}
+
+.assistant-select-item[data-highlighted] {
+  color: var(--paper);
+  background: var(--ink-750);
+}
+
+.assistant-select-item[data-selected] {
+  color: var(--amber-strong);
+}
+
+.assistant-select-item-indicator {
+  display: grid;
+  place-items: center;
+  color: var(--amber-strong);
+}

@@ -1,0 +1,432 @@
+.graph-mode-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 190px;
+}
+
+.graph-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 190px;
+  overflow: hidden;
+  background-color: var(--ink-950);
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--line) 45%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--line) 45%, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.graph-layout-switcher {
+  position: absolute;
+  z-index: 6;
+  top: 9px;
+  right: 126px;
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--ink-850) 94%, transparent);
+  box-shadow: 0 5px 16px var(--workbench-shadow);
+}
+
+.graph-layout-switcher button {
+  display: flex;
+  align-items: center;
+  min-height: 25px;
+  gap: 5px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 3px;
+  color: var(--text-muted);
+  background: transparent;
+  font-size: 9px;
+}
+
+.graph-layout-switcher button:hover {
+  color: var(--paper);
+  background: var(--ink-700);
+}
+
+.graph-layout-switcher button.is-active {
+  color: var(--paper);
+  background: var(--ink-650);
+  box-shadow: inset 0 -1px var(--amber);
+}
+
+.graph-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.graph-hit-area {
+  fill: transparent;
+  cursor: grab;
+}
+
+.graph-hit-area:active {
+  cursor: grabbing;
+}
+
+.graph-lanes {
+  pointer-events: none;
+}
+
+.structured-lane > rect {
+  fill: color-mix(in srgb, var(--ink-900) 84%, transparent);
+  stroke: color-mix(in srgb, var(--line) 85%, transparent);
+  stroke-width: 1;
+}
+
+.structured-lane-title {
+  fill: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
+.structured-lane-count,
+.structured-lane-description {
+  fill: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 7px;
+}
+
+.structured-lane-description {
+  opacity: 0.82;
+}
+
+.graph-lane line {
+  stroke: var(--lane-color, var(--line-strong));
+  stroke-dasharray: 2 9;
+  stroke-width: 1;
+  opacity: 0.28;
+}
+
+.graph-lane text {
+  fill: var(--lane-color, var(--text-muted));
+  font-family: var(--mono);
+  font-size: 7px;
+  font-weight: 650;
+  letter-spacing: 0.11em;
+  paint-order: stroke;
+  stroke: var(--ink-950);
+  stroke-width: 4px;
+  text-transform: uppercase;
+}
+
+.graph-node {
+  cursor: pointer;
+  transition: opacity var(--duration-quick) ease;
+}
+
+.graph-node > rect:first-of-type {
+  fill: var(--ink-900);
+  stroke: var(--line-strong);
+  stroke-width: 1;
+  filter: drop-shadow(0 5px 9px var(--workbench-shadow));
+  transition: fill var(--duration-quick) ease, stroke var(--duration-quick) ease;
+}
+
+.graph-node:hover > rect:first-of-type,
+.graph-node:focus-visible > rect:first-of-type {
+  fill: var(--ink-750);
+  stroke: var(--text-muted);
+}
+
+.graph-node.is-selected > rect:first-of-type {
+  fill: var(--amber-wash);
+  stroke: var(--amber);
+  stroke-width: 1.5;
+}
+
+.graph-node.is-dimmed,
+.graph-edges .is-dimmed {
+  opacity: 0.22;
+}
+
+.node-label {
+  fill: var(--paper);
+  font-size: 11px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.node-kind {
+  fill: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  text-transform: uppercase;
+}
+
+.node-source {
+  fill: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 7px;
+  pointer-events: none;
+}
+
+.node-selected-dot {
+  fill: var(--amber);
+}
+
+.compact-node-shape {
+  fill: var(--ink-750);
+  stroke: var(--line-strong);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+  transition: fill var(--duration-quick) ease, stroke var(--duration-quick) ease;
+}
+
+.compact-node-label {
+  opacity: 0;
+  fill: var(--paper);
+  paint-order: stroke;
+  stroke: var(--ink-950);
+  stroke-width: 5px;
+  font-size: 10px;
+  font-weight: 650;
+  pointer-events: none;
+  transition: opacity var(--duration-quick) ease;
+}
+
+.compact-graph-node:hover .compact-node-label,
+.compact-graph-node:focus-visible .compact-node-label,
+.compact-graph-node.is-selected .compact-node-label {
+  opacity: 1;
+}
+
+.compact-graph-node:hover .compact-node-shape,
+.compact-graph-node:focus-visible .compact-node-shape,
+.compact-graph-node.is-selected .compact-node-shape {
+  fill: var(--amber-wash);
+  stroke: var(--amber);
+  stroke-width: 2;
+}
+
+.compact-graph-node.evidence-observed .compact-node-shape { stroke: var(--observed); }
+.compact-graph-node.evidence-inferred .compact-node-shape { stroke: var(--inferred); stroke-dasharray: 3 2; }
+.is-compact-explore .graph-edge { opacity: 0.18; stroke-width: 0.8; }
+.is-compact-explore.has-selection .graph-edges > g:not(.is-dimmed) .graph-edge {
+  opacity: 0.82;
+  stroke-width: 1.7;
+}
+
+.graph-node.evidence-static .node-evidence-rail { fill: var(--text-secondary); }
+.graph-node.evidence-observed .node-evidence-rail { fill: var(--observed); }
+.graph-node.evidence-inferred .node-evidence-rail { fill: var(--inferred); }
+.graph-node.evidence-inferred > rect:first-of-type { stroke-dasharray: 4 3; }
+.graph-node.evidence-observed > rect:first-of-type {
+  stroke: color-mix(in srgb, var(--observed) 60%, var(--line-strong));
+}
+
+.graph-edge {
+  stroke-width: 1.2;
+  opacity: 0.72;
+}
+
+.graph-edge.evidence-static { stroke: var(--text-muted); }
+.graph-edge.evidence-observed { stroke: var(--observed); stroke-width: 2; }
+.graph-edge.evidence-inferred { stroke: var(--inferred); stroke-dasharray: 5 5; }
+.marker-static { fill: var(--text-muted); }
+.marker-observed { fill: var(--observed); }
+.marker-inferred { fill: var(--inferred); }
+
+.edge-label {
+  paint-order: stroke;
+  stroke: var(--ink-950);
+  stroke-width: 4px;
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.03em;
+}
+
+.edge-label.evidence-static { fill: var(--text-muted); }
+.edge-label.evidence-observed { fill: var(--observed); }
+.edge-label.evidence-inferred { fill: var(--inferred); }
+
+.graph-zoom-controls {
+  position: absolute;
+  z-index: 4;
+  top: 9px;
+  right: 9px;
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--ink-850) 92%, transparent);
+}
+
+.structured-counts {
+  position: absolute;
+  z-index: 3;
+  right: 10px;
+  bottom: 38px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: min(620px, calc(100% - 20px));
+  gap: 4px 9px;
+  padding: 4px 7px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--ink-850) 92%, transparent);
+  font-family: var(--mono);
+  font-size: 8px;
+}
+
+.structured-counts .is-bounded {
+  color: var(--inferred);
+}
+
+.graph-config-privacy {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-muted);
+  font-size: 8px;
+  transform: translateX(-50%);
+}
+
+.graph-config-privacy svg {
+  color: var(--observed);
+}
+
+.graph-truncated-warning {
+  position: absolute;
+  z-index: 4;
+  top: 9px;
+  left: 9px;
+  display: flex;
+  align-items: center;
+  max-width: min(430px, calc(100% - 115px));
+  min-height: 30px;
+  gap: 6px;
+  padding: 5px 8px;
+  border: 1px solid color-mix(in srgb, var(--inferred) 55%, var(--line));
+  border-radius: var(--radius);
+  color: var(--inferred);
+  background: color-mix(in srgb, var(--inferred) 9%, var(--ink-850));
+  box-shadow: 0 5px 16px var(--workbench-shadow);
+  font-size: 9px;
+}
+
+.graph-truncated-warning svg {
+  flex: none;
+  color: var(--inferred);
+}
+
+.graph-zoom-controls button {
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  color: var(--text-muted);
+  background: transparent;
+}
+
+.graph-zoom-controls button:hover {
+  color: var(--paper);
+  background: var(--ink-700);
+}
+
+.graph-zoom-controls button:disabled {
+  color: var(--text-muted);
+  cursor: not-allowed;
+  background: transparent;
+}
+
+.evidence-legend {
+  position: absolute;
+  z-index: 3;
+  left: 9px;
+  bottom: 9px;
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--ink-850) 92%, transparent);
+}
+
+.graph-help {
+  position: absolute;
+  z-index: 3;
+  right: 10px;
+  bottom: 11px;
+  color: var(--text-muted);
+  font-size: 9px;
+}
+
+.evidence-badge {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  height: 20px;
+  padding: 0 6px;
+  border: 1px solid;
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.evidence-badge svg {
+  margin-right: 4px;
+}
+
+.evidence-badge.evidence-static {
+  color: var(--text-secondary);
+  border-color: var(--line-strong);
+  background: color-mix(in srgb, var(--text-muted) 8%, transparent);
+}
+
+.evidence-badge.evidence-observed {
+  color: var(--observed);
+  border-color: color-mix(in srgb, var(--observed) 55%, var(--line));
+  background: var(--observed-wash);
+}
+
+.evidence-badge.evidence-inferred {
+  color: var(--inferred);
+  border-color: color-mix(in srgb, var(--inferred) 55%, var(--line));
+  border-style: dashed;
+  background: color-mix(in srgb, var(--inferred) 8%, transparent);
+}
+
+.graph-loader {
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--line-strong);
+  border-top-color: var(--amber);
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+}
+
+.graph-state strong,
+.source-state strong {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.graph-error,
+.source-state[role="alert"] {
+  color: var(--danger);
+}

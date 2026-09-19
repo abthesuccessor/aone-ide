@@ -1,0 +1,373 @@
+/* Shared VS Code-style navigation and welcome hierarchy. */
+:root {
+  --vscode-section-header-height: 22px;
+  --vscode-row-height: 22px;
+}
+
+.ide-navigator-content,
+.ide-navigator-content > :first-child {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.workbench-sidebar-header {
+  display: flex;
+  height: var(--vscode-pane-header-height);
+  min-height: var(--vscode-pane-header-height);
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 9px 0 11px;
+  color: var(--text);
+  background: var(--workbench-sidebar);
+}
+
+.workbench-sidebar-header h2 {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.workbench-sidebar-actions {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 1px;
+}
+
+.workbench-sidebar-actions button {
+  display: grid;
+  width: 22px;
+  min-width: 22px;
+  height: 22px;
+  min-height: 22px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  color: var(--text-muted);
+  background: transparent;
+}
+
+.workbench-sidebar-actions button:hover:not(:disabled) {
+  color: var(--paper);
+  background: var(--vscode-hover-overlay);
+}
+
+.workbench-sidebar-section {
+  display: flex;
+  height: var(--vscode-section-header-height);
+  min-height: var(--vscode-section-header-height);
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+  color: var(--text-secondary);
+  background: var(--workbench-sidebar);
+  white-space: nowrap;
+}
+
+.workbench-sidebar-section > svg {
+  flex: 0 0 12px;
+  color: var(--text-muted);
+}
+
+.workbench-sidebar-section strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+}
+
+.workbench-sidebar-section span {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 11px;
+  text-overflow: ellipsis;
+}
+
+.workbench-sidebar-section small {
+  flex: 0 0 auto;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.workspace-panel,
+.side-feature-panel {
+  border: 0;
+  background: var(--workbench-sidebar);
+}
+
+.search-field {
+  height: 24px;
+  margin: 1px 8px 5px;
+  padding: 0 6px;
+  border-color: var(--line-strong);
+  border-radius: 2px;
+  background: var(--workbench-input);
+}
+
+.search-field input {
+  font-size: 13px;
+}
+
+.tree-scroll,
+.search-results,
+.git-files {
+  scrollbar-gutter: auto;
+}
+
+.tree-row {
+  height: var(--vscode-row-height);
+  min-height: var(--vscode-row-height);
+  font-size: 13px;
+  line-height: var(--vscode-row-height);
+}
+
+.tree-chevron {
+  flex-basis: 14px;
+}
+
+.tree-icon {
+  flex-basis: 19px;
+}
+
+.tree-label {
+  line-height: 22px;
+}
+
+.empty-explorer-actions {
+  padding: 8px 12px;
+}
+
+.empty-explorer-actions button {
+  justify-content: flex-start;
+  height: 32px;
+}
+
+.side-feature-empty {
+  min-height: 126px;
+  gap: 7px;
+  padding: 16px;
+  font-size: 12px;
+}
+
+/* Search follows VS Code's file row -> match row hierarchy. */
+.search-file-row {
+  height: 22px;
+  gap: 4px;
+  padding: 0 8px;
+}
+
+.search-file-row strong {
+  font-size: 12px;
+}
+
+.search-file-row > span,
+.search-file-row > b {
+  font-size: 11px;
+}
+
+.search-match-row {
+  height: 22px;
+  gap: 6px;
+  padding: 0 8px 0 27px;
+}
+
+.search-match-line,
+.search-match-preview {
+  font-size: 11px;
+}
+
+.search-kind {
+  font-size: 9px;
+}
+
+/* Source Control mirrors the compact Changes list and command area. */
+.commit-box {
+  gap: 4px;
+  padding: 5px 8px 6px;
+}
+
+.commit-box textarea {
+  min-height: 30px;
+  padding: 6px;
+  resize: vertical;
+  border-radius: 2px;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.commit-box button {
+  height: 25px;
+  font-size: 12px;
+}
+
+.git-files {
+  padding: 0;
+}
+
+.git-file {
+  grid-template-columns: minmax(0, 1fr) 24px;
+  border-radius: 0;
+  contain-intrinsic-block-size: 22px;
+}
+
+.git-file.is-active {
+  box-shadow: none;
+}
+
+.git-file-name {
+  height: 22px;
+  grid-template-columns: 17px minmax(0, 1fr) 17px;
+  gap: 2px;
+  padding: 0 5px 0 9px;
+}
+
+.git-file-name span,
+.git-file-name b {
+  font-family: var(--sans);
+  font-size: 12px;
+}
+
+.git-file > button:last-child {
+  width: 22px;
+  height: 22px;
+}
+
+/* Project and tool reports keep their content, but use view rows instead of cards. */
+.environment-consent-intro,
+.tool-config-consent {
+  gap: 8px;
+  padding: 10px 12px;
+}
+
+.environment-consent-intro > strong {
+  font-size: 13px;
+}
+
+.environment-consent-intro p,
+.environment-consent-intro ul,
+.tool-config-consent p {
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.environment-consent-intro .primary-button,
+.tool-config-consent button {
+  min-height: 28px;
+  font-size: 12px;
+}
+
+.environment-approval {
+  margin: 0;
+  padding: 7px 9px;
+  border-width: 1px 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.environment-approval strong,
+.environment-section > header strong,
+.environment-ai > div:first-child strong {
+  font-size: 12px;
+}
+
+.environment-approval span,
+.environment-section > header span {
+  font-size: 10px;
+}
+
+.environment-section,
+.environment-ai {
+  padding: 5px 0 0;
+}
+
+.environment-section > header,
+.environment-ai > div:first-child {
+  min-height: 24px;
+  padding: 0 8px;
+}
+
+.environment-stack,
+.environment-tool,
+.environment-recommendation {
+  gap: 3px;
+  margin: 0;
+  padding: 6px 9px 7px 25px;
+  border-width: 1px 0 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.environment-stack strong,
+.environment-tool strong,
+.environment-recommendation strong {
+  font-size: 12px;
+}
+
+.environment-stack span,
+.environment-recommendation > div:first-child span,
+.environment-tool-state small,
+.environment-tool > span,
+.environment-tool > small,
+.environment-recommendation p,
+.environment-ai p,
+.environment-ai-answer p {
+  font-size: 10px;
+}
+
+.environment-stack code,
+.environment-tool code,
+.environment-recommendation code {
+  font-size: 10px;
+}
+
+.environment-recommendation .secondary-button,
+.environment-ai > .secondary-button,
+.environment-show-all {
+  min-height: 25px;
+  font-size: 11px;
+}
+
+.tool-config-list {
+  padding: 0;
+}
+
+.tool-config-card {
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 7px;
+  margin: 0;
+  padding: 8px 9px;
+  border-width: 0 0 1px;
+  border-radius: 0;
+  background: transparent;
+}
+
+.tool-config-card strong {
+  font-size: 12px;
+}
+
+.tool-config-card span,
+.tool-config-card code {
+  font-size: 10px;
+}
+
+.tool-config-card > button {
+  min-height: 25px;
+  font-size: 11px;
+}

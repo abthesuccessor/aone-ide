@@ -1,0 +1,276 @@
+.execution-flow { background-size: 20px 20px; }
+
+.flow-command-bar {
+  position: absolute;
+  z-index: 7;
+  top: 9px;
+  left: 9px;
+  display: flex;
+  align-items: center;
+  max-width: calc(100% - 470px);
+  gap: 8px;
+}
+
+.flow-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: clamp(250px, 28vw, 390px);
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--ink-850) 96%, transparent);
+  box-shadow: 0 5px 16px var(--workbench-shadow);
+}
+
+.flow-search:focus-within { border-color: color-mix(in srgb, var(--amber) 72%, var(--line)); }
+
+.flow-search input {
+  min-width: 0;
+  flex: 1;
+  height: 100%;
+  padding: 0 0 0 7px;
+  border: 0;
+  outline: 0;
+  color: var(--paper);
+  background: transparent;
+  font: 9px var(--sans);
+}
+
+.flow-search input::placeholder { color: var(--text-muted); }
+
+.flow-search-results {
+  position: absolute;
+  z-index: 9;
+  top: 34px;
+  left: -1px;
+  width: min(440px, 68vw);
+  max-height: 310px;
+  overflow: auto;
+  padding: 4px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--ink-850);
+  box-shadow: 0 16px 34px var(--workbench-shadow);
+}
+
+.flow-search-results button {
+  display: grid;
+  width: 100%;
+  gap: 3px;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 3px;
+  color: var(--text-secondary);
+  text-align: left;
+  background: transparent;
+}
+
+.flow-search-results button:hover,
+.flow-search-results button:focus-visible {
+  color: var(--paper);
+  background: var(--ink-700);
+}
+
+.flow-search-results strong {
+  overflow: hidden;
+  font-size: 9px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flow-search-results span,
+.flow-search-results p {
+  margin: 0;
+  color: var(--text-muted);
+  font: 8px var(--mono);
+}
+
+.flow-search-results p { padding: 10px; }
+
+.flow-mode-summary {
+  overflow: hidden;
+  max-width: 280px;
+  color: var(--text-muted);
+  font: 8px var(--mono);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flow-command-action {
+  min-height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--ink-850) 96%, transparent);
+  font: 8px var(--sans);
+  white-space: nowrap;
+}
+
+.flow-command-action:hover:not(:disabled),
+.flow-command-action:focus-visible { border-color: var(--focus); color: var(--paper); }
+
+.flow-truncated-warning {
+  top: 47px;
+  max-width: min(520px, calc(100% - 135px));
+}
+
+.flow-stage > rect {
+  fill: transparent;
+  stroke: none;
+}
+
+.flow-stage-title {
+  fill: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.flow-stage-count {
+  fill: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 7px;
+}
+
+.flow-group-surface {
+  fill: transparent;
+  stroke: none;
+}
+
+.flow-group-toggle {
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.flow-group-toggle > text {
+  fill: var(--text-secondary);
+  font-size: 8px;
+  font-weight: 650;
+}
+
+.flow-group-toggle .flow-group-count {
+  fill: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 6.5px;
+  font-weight: 500;
+}
+
+.flow-group-toggle:hover > text,
+.flow-group-toggle:focus-visible > text { fill: var(--paper); }
+
+.flow-group-toggle:focus-visible {
+  outline: none;
+  filter: drop-shadow(0 0 2px var(--amber));
+}
+
+.flow-group-more {
+  fill: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 6.5px;
+}
+
+.flow-node > rect:first-of-type { fill: color-mix(in srgb, var(--ink-750) 74%, var(--ink-900)); }
+
+.flow-node.is-observed > rect:first-of-type {
+  fill: color-mix(in srgb, var(--observed) 8%, var(--ink-850));
+  stroke: color-mix(in srgb, var(--observed) 70%, var(--line-strong));
+}
+
+.flow-node.is-live > rect:first-of-type {
+  fill: color-mix(in srgb, var(--observed) 16%, var(--ink-850));
+  stroke: var(--observed);
+  stroke-width: 2;
+  animation: flow-live-card-arrival var(--duration-very-slow) var(--ease-smooth-out) both;
+}
+
+.flow-node-label {
+  fill: var(--paper);
+  font-size: 10px;
+  font-weight: 630;
+  pointer-events: none;
+}
+
+.flow-node-observed {
+  fill: var(--observed);
+  pointer-events: none;
+}
+
+.flow-edge { vector-effect: non-scaling-stroke; }
+.flow-edge.is-observed { stroke-width: 2.2; }
+.flow-edges > g.is-selected .flow-edge { opacity: 1; stroke-width: 2; }
+.flow-edges > g.is-live-path .flow-edge {
+  opacity: 1;
+  stroke: var(--observed);
+  stroke-width: 3;
+  animation: flow-live-path-arrival var(--duration-very-slow) var(--ease-smooth-out) both;
+}
+
+@keyframes flow-live-card-arrival {
+  from { filter: drop-shadow(0 0 5px var(--observed)); }
+  to { filter: drop-shadow(0 0 0 transparent); }
+}
+
+@keyframes flow-live-path-arrival {
+  from { stroke-dasharray: 2 7; }
+  to { stroke-dasharray: 0; }
+}
+
+.flow-counts {
+  position: absolute;
+  z-index: 4;
+  right: 10px;
+  bottom: 38px;
+  display: flex;
+  max-width: min(720px, calc(100% - 20px));
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px 10px;
+  padding: 4px 7px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--ink-850) 94%, transparent);
+  font: 8px var(--mono);
+}
+
+.graph-runtime-disclosure {
+  position: absolute;
+  z-index: 4;
+  bottom: 11px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-muted);
+  font-size: 8px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.graph-runtime-disclosure svg {
+  flex: none;
+  color: var(--observed);
+}
+
+@media (max-width: 1100px) {
+  .flow-command-bar { max-width: calc(100% - 300px); }
+  .flow-mode-summary { display: none; }
+  .flow-search { width: min(320px, 42vw); }
+  .graph-runtime-disclosure { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-node.is-live > rect:first-of-type,
+  .flow-edges > g.is-live-path .flow-edge { animation: none; }
+
+  .execution-flow *,
+  .execution-flow *::before,
+  .execution-flow *::after {
+    scroll-behavior: auto;
+    transition-duration: 0.01ms !important;
+  }
+}

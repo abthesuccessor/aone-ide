@@ -1,0 +1,182 @@
+GetWorkspaceFilesArgs:
+  type: object
+  additionalProperties: false
+  properties:
+    query:
+      type: string
+      maxLength: 256
+      pattern: '^[^\u0000-\u001F\u007F-\u009F]*$'
+      description: Optional case-insensitive path substring searched across the complete indexed workspace.
+    limit:
+      type: integer
+      minimum: 1
+      maximum: 5000
+      default: 500
+      description: The backend caps unfiltered lists at 5000 files and search results at 200 matches.
+SearchWorkspaceArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./search.yaml#/WorkspaceSearchRequest
+ReadWorkspaceFileArgs:
+  type: object
+  additionalProperties: false
+  required: [relativePath]
+  properties:
+    relativePath:
+      type: string
+QueryGraphArgs:
+  type: object
+  additionalProperties: false
+  required: [query]
+  properties:
+    query:
+      $ref: ./graph.yaml#/GraphQuery
+StartRunArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./runtime.yaml#/StartRunRequest
+StopRunArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./runtime.yaml#/StopRunRequest
+ListRuntimeEventsArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./runtime.yaml#/ListRuntimeEventsRequest
+StartOtlpReceiverArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./runtime.yaml#/StartOtlpReceiverRequest
+DeleteRuntimeTraceArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./runtime.yaml#/DeleteRuntimeTraceRequest
+GetDebugSessionArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./runtime.yaml#/GetDebugSessionRequest
+ControlDebugSessionArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./runtime.yaml#/DebugControlRequest
+SendApiRequestArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./network.yaml#/ApiRequest
+WebSocketConnectArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./websocket.yaml#/WebSocketConnectRequest
+WebSocketSendArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./websocket.yaml#/WebSocketSendRequest
+WebSocketDisconnectArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./websocket.yaml#/WebSocketDisconnectRequest
+AiExplainArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./ai.yaml#/AiExplainRequest
+ConfigureHostedAiArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./ai.yaml#/ConfigureHostedAiRequest
+ConfigureOllamaArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./ai.yaml#/ConfigureOllamaRequest
+ConfigureAiCliArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./ai.yaml#/ConfigureAiCliRequest
+AiExplainProjectEnvironmentArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./ai.yaml#/AiExplainProjectEnvironmentRequest
+AiProjectAgentArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./ai.yaml#/AiProjectAgentRequest
+InspectProjectEnvironmentArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: ./project-environment.yaml#/InspectProjectEnvironmentRequest
+OptionalWorkspaceSummary:
+  oneOf:
+    - $ref: ./workspace.yaml#/WorkspaceSummary
+    - type: 'null'
+WorkspaceFiles:
+  type: array
+  items:
+    $ref: ./workspace.yaml#/WorkspaceFile
+RunProfiles:
+  type: array
+  items:
+    $ref: ./runtime.yaml#/RunProfile
+OptionalEnvLoadResult:
+  oneOf:
+    - $ref: ./common.yaml#/EnvLoadResult
+    - type: 'null'
+RuntimeEvents:
+  type: array
+  items:
+    $ref: ./runtime.yaml#/RuntimeEvent

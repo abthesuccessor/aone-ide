@@ -1,0 +1,85 @@
+WorkspaceSearchRequest:
+  type: object
+  additionalProperties: false
+  required: [workspaceId, query, limit]
+  properties:
+    workspaceId:
+      type: string
+      minLength: 1
+      maxLength: 200
+      pattern: '^[^\u0000-\u001F\u007F-\u009F]+$'
+      description: Backend-issued identifier of the workspace being searched.
+    query:
+      type: string
+      minLength: 1
+      maxLength: 256
+      pattern: '^[^\u0000-\u001F\u007F-\u009F]+$'
+      description: >-
+        Literal code text; ASCII letters are case-insensitive and non-ASCII
+        characters retain exact case. It is never interpreted as SQL or a regular expression.
+    limit:
+      type: integer
+      minimum: 1
+      maximum: 500
+      description: Maximum number of matches returned after relevance ordering.
+
+WorkspaceSearchMatchKind:
+  type: string
+  enum: [content, path, symbol, endpoint, event, heading, sentence]
+
+WorkspaceSearchMatch:
+  type: object
+  additionalProperties: false
+  required: [key, relativePath, startLine, startColumn, endLine, endColumn, preview, matchText, kind]
+  properties:
+    key:
+      type: string
+      description: Deterministic document key for renderer grouping and selection within the committed index.
+    relativePath:
+      type: string
+    startLine:
+      type: integer
+      minimum: 1
+    startColumn:
+      type: integer
+      minimum: 1
+      description: One-based UTF-16 code-unit column used by Monaco.
+    endLine:
+      type: integer
+      minimum: 1
+    endColumn:
+      type: integer
+      minimum: 1
+      description: One-based UTF-16 code-unit column; the range end is exclusive.
+    preview:
+      type: string
+      maxLength: 320
+    matchText:
+      type: string
+      maxLength: 256
+    kind:
+      $ref: '#/WorkspaceSearchMatchKind'
+
+WorkspaceSearchResult:
+  type: object
+  additionalProperties: false
+  required: [query, matches, totalMatches, truncated, indexedFileCount]
+  properties:
+    query:
+      type: string
+      maxLength: 256
+    matches:
+      type: array
+      maxItems: 500
+      items:
+        $ref: '#/WorkspaceSearchMatch'
+    totalMatches:
+      type: integer
+      minimum: 0
+      description: Number of matches observed before the first enforced bound.
+    truncated:
+      type: boolean
+      description: True when a time, byte, candidate, occurrence, or result bound omitted work.
+    indexedFileCount:
+      type: integer
+      minimum: 0

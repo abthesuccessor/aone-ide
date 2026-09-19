@@ -1,0 +1,66 @@
+[package]
+name = "aone-ide"
+version = "0.1.0"
+description = "Aone IDE execution intelligence desktop application"
+license = "MIT"
+publish = false
+authors = ["Aone IDE contributors"]
+edition = "2024"
+rust-version = "1.97"
+
+[lib]
+name = "aone_ide_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.5.6", features = [] }
+
+[dependencies]
+aho-corasick = "1.1.5"
+anyhow = "1.0.102"
+base64 = "0.22.1"
+blake3 = "1.8.6"
+dashmap = "6.2.1"
+directories = "6.0.0"
+futures-util = { version = "0.3.34", default-features = false, features = ["sink", "std"] }
+flate2 = "1.1.9"
+ignore = "0.4.33"
+libc = "0.2.183"
+notify = "8.2.0"
+parking_lot = "0.12.5"
+petgraph = "0.8.3"
+portable-pty = "0.9.0"
+rusqlite = { version = "0.40.2", default-features = false, features = ["bundled", "functions"] }
+reqwest = { version = "0.12.28", default-features = false, features = ["json", "rustls-tls", "stream"] }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+serde_yaml_ng = "0.10.0"
+sha2 = "0.10.9"
+tauri = { version = "2.11.5", features = [] }
+tauri-plugin-dialog = "2.7.2"
+thiserror = "2.0.18"
+tokio = { version = "1.50.0", features = ["io-util", "macros", "net", "process", "rt-multi-thread", "sync", "time"] }
+tokio-tungstenite = { version = "0.30.0", default-features = false, features = ["connect", "handshake", "rustls-tls-webpki-roots"] }
+tree-sitter = "0.26.12"
+tree-sitter-c-sharp = "0.23.1"
+tree-sitter-cpp = "0.23.4"
+tree-sitter-go = "0.25.0"
+tree-sitter-java = "0.23.5"
+tree-sitter-javascript = "0.25.0"
+tree-sitter-kotlin-ng = "1.1.0"
+tree-sitter-python = "0.25.0"
+tree-sitter-rust = "0.24.2"
+tree-sitter-typescript = "0.23.2"
+toml = "0.9.8"
+uuid = { version = "1.24.1", features = ["serde", "v4", "v5", "v7"] }
+zeroize = "1.8.2"
+
+[dev-dependencies]
+tempfile = "3.27.0"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

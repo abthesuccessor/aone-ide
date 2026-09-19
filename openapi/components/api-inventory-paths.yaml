@@ -1,0 +1,25 @@
+ListApiEndpoints:
+  post:
+    operationId: listApiEndpoints
+    tags: [graph]
+    summary: Page the deduplicated static API operation inventory.
+    description: >-
+      Returns unique HTTP method/path operations for the exact open workspace.
+      OpenAPI declarations, Utoipa handlers, and client call sites are merged as
+      separate provenance on one operation. No remote reference is resolved.
+    x-aone-tauri-command: list_api_endpoints
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./api-inventory.yaml#/ListApiEndpointsArgs
+    responses:
+      '200':
+        description: One bounded deterministic page with exact matching and indexed totals.
+        content:
+          application/json:
+            schema:
+              $ref: ./api-inventory.yaml#/ApiEndpointPage
+      default:
+        $ref: ../aone-ipc.openapi.yaml#/components/responses/IpcError

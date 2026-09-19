@@ -1,0 +1,99 @@
+.api-console.is-request-only {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.api-console.is-request-only .request-composer {
+  border-right: 0;
+}
+
+.api-console.is-compact {
+  height: auto;
+  overflow: visible;
+}
+
+.api-console.is-compact .request-composer {
+  overflow: visible;
+  padding: 6px;
+}
+
+.api-console.is-compact .request-toolbar {
+  gap: 5px;
+}
+
+.api-console.is-compact .request-privacy {
+  min-width: 0;
+  font: 8px var(--mono);
+}
+
+.api-console.is-compact .request-line {
+  grid-template-columns: 58px minmax(0, 1fr) 58px;
+}
+
+.api-console.is-compact .request-line select,
+.api-console.is-compact .request-line input {
+  padding-inline: 5px;
+}
+
+.api-console.is-compact .send-button {
+  gap: 3px;
+  padding-inline: 6px;
+}
+
+.request-validation {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  margin: 0 0 5px;
+  padding: 4px 6px;
+  border: 1px solid var(--amber);
+  border-radius: 3px;
+  color: var(--amber-strong);
+  background: var(--ink-900);
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.request-validation svg {
+  flex: 0 0 auto;
+}
+
+.request-validation code {
+  color: inherit;
+  font-family: var(--mono);
+}
+
+.request-editor-switcher {
+  display: flex;
+  height: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.request-editor-switcher button {
+  padding: 0 8px;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  color: var(--text-muted);
+  background: transparent;
+  font-size: 9px;
+}
+
+.request-editor-switcher button[aria-selected="true"] {
+  border-bottom-color: var(--observed);
+  color: var(--paper);
+}
+
+.api-console.is-compact .request-editors,
+.api-console.is-compact .request-editors.is-graphql {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 5px;
+  padding-top: 4px;
+}
+
+.api-console.is-compact .request-editors label {
+  grid-template-rows: 15px minmax(106px, 1fr);
+}
+
+.api-console.is-compact .request-editors.is-graphql label {
+  grid-template-rows: 15px minmax(72px, 1fr);
+}

@@ -1,0 +1,128 @@
+WebSocketEncoding:
+  type: string
+  enum: [text, base64]
+WebSocketEventKind:
+  type: string
+  enum: [connecting, open, message, dropped, error, closed]
+WebSocketConnectRequest:
+  type: object
+  additionalProperties: false
+  required: [url, headers, protocols]
+  properties:
+    url:
+      type: string
+      format: uri
+      maxLength: 16384
+      pattern: '^wss?://'
+      x-aone-max-bytes: 16384
+      description: WebSocket URL using only ws or wss.
+    headers:
+      type: array
+      maxItems: 64
+      x-aone-max-aggregate-bytes: 32768
+      items:
+        $ref: ./network.yaml#/ApiHeader
+    protocols:
+      type: array
+      maxItems: 16
+      x-aone-max-aggregate-bytes: 1024
+      items:
+        type: string
+        minLength: 1
+        maxLength: 128
+        x-aone-max-bytes: 128
+    timeoutMs:
+      type: integer
+      minimum: 250
+      maximum: 60000
+      default: 15000
+WebSocketConnectResult:
+  type: object
+  additionalProperties: false
+  required: [sessionId]
+  properties:
+    sessionId:
+      type: string
+      maxLength: 64
+      x-aone-max-bytes: 64
+    protocol:
+      type: string
+WebSocketSendRequest:
+  type: object
+  additionalProperties: false
+  required: [sessionId, data, encoding]
+  properties:
+    sessionId:
+      type: string
+      maxLength: 64
+      x-aone-max-bytes: 64
+    data:
+      type: string
+      x-aone-max-text-bytes: 1048576
+      x-aone-max-base64-characters: 1398104
+      description: Text, or canonical base64 whose decoded payload is at most 1 MiB.
+    encoding:
+      $ref: '#/WebSocketEncoding'
+WebSocketSendResult:
+  type: object
+  additionalProperties: false
+  required: [accepted]
+  properties:
+    accepted:
+      type: boolean
+WebSocketDisconnectRequest:
+  type: object
+  additionalProperties: false
+  required: [sessionId]
+  properties:
+    sessionId:
+      type: string
+      maxLength: 64
+      x-aone-max-bytes: 64
+WebSocketDisconnectResult:
+  type: object
+  additionalProperties: false
+  required: [disconnected]
+  properties:
+    disconnected:
+      type: boolean
+WebSocketEvent:
+  type: object
+  additionalProperties: false
+  required: [sessionId, kind, timestamp, destination, truncated]
+  properties:
+    sessionId:
+      type: string
+      maxLength: 64
+      x-aone-max-bytes: 64
+    kind:
+      $ref: '#/WebSocketEventKind'
+    timestamp:
+      type: string
+      format: date-time
+    destination:
+      type: string
+      description: Sanitized origin; credentials, path, query values, and fragments are absent.
+    protocol:
+      type: string
+    data:
+      type: string
+      maxLength: 262144
+      x-aone-max-bytes: 262144
+      description: Bounded text or base64 payload for message events.
+    encoding:
+      $ref: '#/WebSocketEncoding'
+    byteLength:
+      type: integer
+      minimum: 0
+    droppedCount:
+      type: integer
+      format: int64
+      minimum: 1
+      description: Number of inbound messages omitted by a bounded dropped-event summary.
+    truncated:
+      type: boolean
+    detail:
+      type: string
+      maxLength: 1024
+      x-aone-max-bytes: 1024

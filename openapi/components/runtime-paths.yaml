@@ -1,0 +1,179 @@
+StartRun:
+  post:
+    operationId: startRun
+    tags: [runtime]
+    summary: Start one registered local process after an explicit Run or Debug action.
+    x-aone-tauri-command: start_run
+    x-aone-native-consent: explicit-user-action
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./commands.yaml#/StartRunArgs
+    responses:
+      '200':
+        description: Reserved run identifier.
+        content:
+          application/json:
+            schema:
+              $ref: ./runtime.yaml#/StartRunResult
+      default:
+        $ref: ../aone-ipc.openapi.yaml#/components/responses/IpcError
+StopRun:
+  post:
+    operationId: stopRun
+    tags: [runtime]
+    summary: Stop the active process group with bounded escalation.
+    x-aone-tauri-command: stop_run
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./commands.yaml#/StopRunArgs
+    responses:
+      '200':
+        description: Stop result.
+        content:
+          application/json:
+            schema:
+              $ref: ./runtime.yaml#/StopRunResult
+      default:
+        $ref: ../aone-ipc.openapi.yaml#/components/responses/IpcError
+ListRuntimeEvents:
+  post:
+    operationId: listRuntimeEvents
+    tags: [runtime]
+    summary: Read a bounded suffix of in-memory observed runtime events.
+    x-aone-tauri-command: list_runtime_events
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./commands.yaml#/ListRuntimeEventsArgs
+    responses:
+      '200':
+        description: Runtime event suffix.
+        content:
+          application/json:
+            schema:
+              $ref: ../aone-ipc.openapi.yaml#/components/schemas/RuntimeEvents
+      default:
+        $ref: ../aone-ipc.openapi.yaml#/components/responses/IpcError
+GetDebugSession:
+  post:
+    operationId: getDebugSession
+    tags: [runtime]
+    summary: Read the bounded cooperative debug-session snapshot for one managed run.
+    x-aone-tauri-command: get_debug_session
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./commands.yaml#/GetDebugSessionArgs
+    responses:
+      '200':
+        description: Current cooperative protocol/process lifecycle and latest safe points.
+        content:
+          application/json:
+            schema:
+              $ref: ./runtime.yaml#/DebugSessionSnapshot
+      default:
+        $ref: ../aone-ipc.openapi.yaml#/components/responses/IpcError
+ControlDebugSession:
+  post:
+    operationId: controlDebugSession
+    tags: [runtime]
+    summary: Control cooperative safe points or authoritatively stop the managed run.
+    x-aone-tauri-command: control_debug_session
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./commands.yaml#/ControlDebugSessionArgs
+    responses:
+      '200':
+        description: Control acceptance and current bounded snapshot.
+        content:
+          application/json:
+            schema:
+              $ref: ./runtime.yaml#/DebugControlResult
+      default:
+        $ref: ../aone-ipc.openapi.yaml#/components/responses/IpcError
+StartOtlpReceiver:
+  post:
+    operationId: startOtlpReceiver
+    tags: [runtime]
+    summary: Confirm and start the token-gated loopback OTLP HTTP JSON trace receiver.
+    x-aone-tauri-command: start_otlp_receiver
+    x-aone-native-consent: confirmation
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./commands.yaml#/StartOtlpReceiverArgs
+    responses:
+      '200':
+        description: Active receiver endpoint, token, bounds, and cumulative in-memory counts.
+        content:
+          application/json:
+            schema:
+              $ref: ./runtime.yaml#/OtlpReceiverSnapshot
+      default:
+        $ref: ../aone-ipc.openapi.yaml#/components/responses/IpcError
+GetOtlpReceiver:
+  post:
+    operationId: getOtlpReceiver
+    tags: [runtime]
+    summary: Read the local OTLP receiver lifecycle and bounded counters.
+    x-aone-tauri-command: get_otlp_receiver
+    responses:
+      '200':
+        description: Current receiver snapshot.
+        content:
+          application/json:
+            schema:
+              $ref: ./runtime.yaml#/OtlpReceiverSnapshot
+      default:
+        $ref: ../aone-ipc.openapi.yaml#/components/responses/IpcError
+StopOtlpReceiver:
+  post:
+    operationId: stopOtlpReceiver
+    tags: [runtime]
+    summary: Stop the loopback receiver and zeroize its ephemeral token.
+    x-aone-tauri-command: stop_otlp_receiver
+    responses:
+      '200':
+        description: Stopped receiver snapshot.
+        content:
+          application/json:
+            schema:
+              $ref: ./runtime.yaml#/OtlpReceiverSnapshot
+      default:
+        $ref: ../aone-ipc.openapi.yaml#/components/responses/IpcError
+DeleteRuntimeTrace:
+  post:
+    operationId: deleteRuntimeTrace
+    tags: [runtime]
+    summary: Delete one trace's bounded in-memory runtime events.
+    x-aone-tauri-command: delete_runtime_trace
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./commands.yaml#/DeleteRuntimeTraceArgs
+    responses:
+      '200':
+        description: Number of deleted in-memory runtime events.
+        content:
+          application/json:
+            schema:
+              $ref: ./runtime.yaml#/DeleteRuntimeTraceResult
+      default:
+        $ref: ../aone-ipc.openapi.yaml#/components/responses/IpcError

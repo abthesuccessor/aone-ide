@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+release/
+src-tauri/target/
+.DS_Store
+*.log
+.env
+.env.*
+!.env.example
+.aone/

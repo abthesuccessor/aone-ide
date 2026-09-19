@@ -1,0 +1,67 @@
+ApiHeader:
+  type: object
+  additionalProperties: false
+  required: [name, value]
+  properties:
+    name:
+      type: string
+      minLength: 1
+    value:
+      type: string
+ApiRequest:
+  type: object
+  additionalProperties: false
+  required: [method, url, headers]
+  properties:
+    method:
+      type: string
+      minLength: 1
+      description: Valid HTTP method except CONNECT and TRACE.
+    url:
+      type: string
+      format: uri
+      maxLength: 16384
+      pattern: '^https?://'
+      x-aone-max-bytes: 16384
+      description: HTTP or HTTPS URL without user-info or a fragment.
+    headers:
+      type: array
+      maxItems: 128
+      x-aone-max-aggregate-bytes: 65536
+      items:
+        $ref: '#/ApiHeader'
+    body:
+      type: string
+      x-aone-max-bytes: 1048576
+      description: Valid JSON; GraphQL uses the standard JSON envelope.
+    timeoutMs:
+      type: integer
+      minimum: 100
+      maximum: 60000
+      default: 15000
+ApiResponse:
+  type: object
+  additionalProperties: false
+  required: [requestId, status, statusText, headers, body, durationMs, truncated]
+  properties:
+    requestId:
+      type: string
+    status:
+      type: integer
+      minimum: 100
+      maximum: 599
+    statusText:
+      type: string
+    headers:
+      type: array
+      items:
+        $ref: '#/ApiHeader'
+    body:
+      type: string
+      x-aone-max-bytes: 2097152
+      description: UTF-8-lossy, redacted body; `truncated` reports the byte ceiling.
+    durationMs:
+      type: integer
+      minimum: 0
+    truncated:
+      type: boolean

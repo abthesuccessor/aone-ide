@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 2,
+  "generator": "OpenAPI Generator",
+  "generatorVersion": "7.24.0",
+  "generatorName": "typescript-fetch",
+  "generatorDigest": "sha256:5bf3dc75f764c584da8e3344c51b2f3f1e74703461d46a035b5ac1d31515cc88",
+  "typescriptVersion": "7.0.2",
+  "typescriptMajorVersion": 7,
+  "sourceSha256": "7cb74865619e6a2b5e10908da303c2a23b5ab50d3a9f1131f69a68997ffef39a",
+  "generatedSha256": "d6bcfe85c93e7e510db5e39b2f387f9275e7b484ed2bf4a8d88724e854dadd27"
+}

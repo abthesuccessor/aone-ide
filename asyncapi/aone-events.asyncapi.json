@@ -1,0 +1,151 @@
+{
+  "asyncapi": "3.1.0",
+  "id": "urn:aone:desktop:events:v0.1",
+  "info": {
+    "title": "Aone IDE desktop events",
+    "version": "0.1.0",
+    "description": "Backend-originated Tauri events consumed by the React WebView. This document does not describe a public network event broker."
+  },
+  "defaultContentType": "application/json",
+  "servers": {
+    "desktop": {
+      "host": "native-core",
+      "protocol": "tauri-event",
+      "description": "In-process Tauri event channel from the Rust core to its WebView.",
+      "x-aone-transport": "tauri-event"
+    }
+  },
+  "channels": {
+    "scanProgress": {
+      "address": "aone-scan-progress",
+      "messages": {
+        "scanProgress": {
+          "$ref": "#/components/messages/ScanProgress"
+        }
+      }
+    },
+    "runtimeEvent": {
+      "address": "aone-runtime-event",
+      "messages": {
+        "runtimeEvent": {
+          "$ref": "#/components/messages/RuntimeEvent"
+        }
+      }
+    },
+    "workspaceChanged": {
+      "address": "aone-workspace-changed",
+      "messages": {
+        "workspaceChanged": {
+          "$ref": "#/components/messages/WorkspaceChanged"
+        }
+      }
+    },
+    "webSocketEvent": {
+      "address": "aone-websocket-event",
+      "messages": {
+        "webSocketEvent": {
+          "$ref": "#/components/messages/WebSocketEvent"
+        }
+      }
+    },
+    "terminalEvent": {
+      "address": "aone-terminal-event",
+      "messages": {
+        "terminalEvent": {
+          "$ref": "#/components/messages/TerminalEvent"
+        }
+      }
+    }
+  },
+  "operations": {
+    "emitScanProgress": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/scanProgress"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/scanProgress/messages/scanProgress"
+        }
+      ]
+    },
+    "emitRuntimeEvent": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/runtimeEvent"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/runtimeEvent/messages/runtimeEvent"
+        }
+      ]
+    },
+    "emitWorkspaceChanged": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/workspaceChanged"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/workspaceChanged/messages/workspaceChanged"
+        }
+      ]
+    },
+    "emitWebSocketEvent": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/webSocketEvent"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/webSocketEvent/messages/webSocketEvent"
+        }
+      ]
+    },
+    "emitTerminalEvent": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/terminalEvent"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/terminalEvent/messages/terminalEvent"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "ScanProgress": {
+        "name": "ScanProgress",
+        "payload": {
+          "$ref": "../openapi/components/workspace.yaml#/ScanProgress"
+        }
+      },
+      "RuntimeEvent": {
+        "name": "RuntimeEvent",
+        "payload": {
+          "$ref": "../openapi/components/runtime.yaml#/RuntimeEvent"
+        }
+      },
+      "WorkspaceChanged": {
+        "name": "WorkspaceChanged",
+        "payload": {
+          "$ref": "../openapi/components/workspace.yaml#/WorkspaceChanged"
+        }
+      },
+      "WebSocketEvent": {
+        "name": "WebSocketEvent",
+        "payload": {
+          "$ref": "../openapi/components/websocket.yaml#/WebSocketEvent"
+        }
+      },
+      "TerminalEvent": {
+        "name": "TerminalEvent",
+        "payload": {
+          "$ref": "../openapi/components/developer.yaml#/TerminalEvent"
+        }
+      }
+    }
+  }
+}

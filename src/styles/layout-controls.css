@@ -1,0 +1,54 @@
+button.titlebar-command-center:hover {
+  color: var(--text-secondary);
+  border-color: var(--focus);
+  background: var(--ink-850);
+}
+
+.titlebar-command-center.is-locked {
+  pointer-events: none;
+}
+
+.titlebar-command-center kbd {
+  flex: 0 0 auto;
+  padding-left: 8px;
+  color: var(--text-muted);
+  font: 9px var(--mono);
+}
+
+.titlebar-layout-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-left: 4px;
+  border-left: 1px solid var(--line);
+}
+
+.layout-control {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  background: transparent;
+}
+
+.layout-control:hover,
+.layout-control[aria-pressed="true"] {
+  color: var(--text-secondary);
+  background: var(--ink-750);
+}
+
+.layout-control[aria-pressed="true"] {
+  border-color: var(--line-strong);
+}
+
+.layout-control.is-secondary svg {
+  transform: scaleX(-1);
+}
+
+@media (max-width: 1340px) {
+  .titlebar-command-center kbd { display: none; }
+}

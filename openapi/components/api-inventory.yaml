@@ -1,0 +1,156 @@
+ApiEndpointRole:
+  type: string
+  enum: [producer, consumer, unknown]
+ApiProtocol:
+  type: string
+  enum: [http, webSocket, event, rpc, unknown]
+ApiGroupingBasis:
+  type: string
+  enum: [openApiTag, sourcePath]
+ApiEndpointGrouping:
+  type: object
+  additionalProperties: false
+  required: [key, segments, basis]
+  properties:
+    key: { type: string }
+    segments:
+      type: array
+      maxItems: 64
+      items: { type: string, maxLength: 240 }
+    basis:
+      $ref: '#/ApiGroupingBasis'
+ApiEndpointHandler:
+  type: object
+  additionalProperties: false
+  required: [id, kind, label, evidence]
+  properties:
+    id: { type: string }
+    kind: { type: string }
+    label: { type: string, maxLength: 240 }
+    source:
+      $ref: ./graph.yaml#/SourceLocation
+    evidence:
+      $ref: ./graph.yaml#/EvidenceKind
+ApiClientCoverage:
+  type: object
+  additionalProperties: false
+  required: [count]
+  properties:
+    count:
+      type: integer
+      minimum: 0
+      maximum: 500000
+      description: Exact indexed client call-site count for this unique operation.
+    firstSource:
+      $ref: ./graph.yaml#/SourceLocation
+ApiEndpoint:
+  type: object
+  additionalProperties: false
+  required: [id, label, method, path, role, protocol, sourceFile, evidence, grouping, clientCoverage, occurrenceCount]
+  properties:
+    id:
+      type: string
+      description: Stable canonical fact ID; clients must not parse it.
+    label: { type: string, maxLength: 243 }
+    method:
+      type: string
+      enum: [CONNECT, DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT, TRACE]
+    path:
+      type: string
+      maxLength: 1024
+      pattern: '^(?:/(?:[^/?#\u0000-\u001F\u007F-\u009F][^?#\u0000-\u001F\u007F-\u009F]*)?|https?://[^/?#@\u0000-\u001F\u007F-\u009F]+(?:/[^?#\u0000-\u001F\u007F-\u009F]*)?)$'
+    role:
+      $ref: '#/ApiEndpointRole'
+    protocol:
+      $ref: '#/ApiProtocol'
+    sourceFile: { type: string }
+    source:
+      $ref: ./graph.yaml#/SourceLocation
+    language: { type: string }
+    framework: { type: string, maxLength: 240 }
+    operationId: { type: string, maxLength: 240 }
+    evidence:
+      $ref: ./graph.yaml#/EvidenceKind
+    grouping:
+      $ref: '#/ApiEndpointGrouping'
+    handler:
+      $ref: '#/ApiEndpointHandler'
+    clientCoverage:
+      $ref: '#/ApiClientCoverage'
+    occurrenceCount:
+      type: integer
+      minimum: 1
+      maximum: 500000
+ApiInventoryCounts:
+  type: object
+  additionalProperties: false
+  required: [producer, consumerOnly, clientCovered, unknown]
+  properties:
+    producer: { type: integer, minimum: 0, maximum: 500000 }
+    consumerOnly: { type: integer, minimum: 0, maximum: 500000 }
+    clientCovered: { type: integer, minimum: 0, maximum: 500000 }
+    unknown:
+      type: integer
+      minimum: 0
+      maximum: 500000
+      description: Legacy or unclassified facts that require a rescan before producer/consumer truth is known.
+ListApiEndpointsRequest:
+  type: object
+  additionalProperties: false
+  required: [workspaceId]
+  properties:
+    workspaceId:
+      type: string
+      minLength: 1
+      maxLength: 200
+      pattern: '^[^\u0000-\u001F\u007F-\u009F]+$'
+    query:
+      type: string
+      maxLength: 128
+      pattern: '^[^\u0000-\u001F\u007F-\u009F]*$'
+      description: >-
+        Case-insensitive method, path, operation ID, label, source path, language,
+        framework, OpenAPI spec title or tag, or handler filter.
+    cursor:
+      type: string
+      maxLength: 200
+      pattern: '^[^\u0000-\u001F\u007F-\u009F]+$'
+      description: Opaque keyset cursor bound to the unchanged query.
+    limit: { type: integer, minimum: 1, maximum: 200, default: 100 }
+ListApiEndpointsArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: '#/ListApiEndpointsRequest'
+ApiEndpointPage:
+  type: object
+  additionalProperties: false
+  required: [workspaceId, endpoints, total, indexedTotal, returned, truncated, counts]
+  properties:
+    workspaceId: { type: string }
+    endpoints:
+      type: array
+      maxItems: 200
+      items:
+        $ref: '#/ApiEndpoint'
+    total:
+      type: integer
+      minimum: 0
+      maximum: 500000
+      description: Exact operation count matching the current query.
+    indexedTotal:
+      type: integer
+      minimum: 0
+      maximum: 500000
+      description: Exact unique operation count before the optional query filter.
+    returned: { type: integer, minimum: 0, maximum: 200 }
+    nextCursor:
+      type: string
+      description: Opaque cursor for the next matching page.
+    truncated:
+      type: boolean
+      description: True only when another matching page exists.
+    counts:
+      $ref: '#/ApiInventoryCounts'

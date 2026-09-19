@@ -1,0 +1,57 @@
+.activity-bar {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 0 5px;
+  border: 0;
+  background: transparent;
+}
+
+.activity-bar > div {
+  display: grid;
+  width: 100%;
+}
+
+.activity-bar button {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: 50px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  color: var(--text-muted);
+  background: transparent;
+}
+
+.activity-bar button > .activity-icon {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.activity-bar button::before {
+  position: absolute;
+  top: 7px;
+  bottom: 7px;
+  left: 0;
+  width: 2px;
+  content: "";
+  background: transparent;
+}
+
+.activity-bar button:hover,
+.activity-bar button.is-active {
+  color: var(--paper);
+  background: transparent;
+}
+
+.activity-bar button.is-active::before {
+  background: var(--amber);
+}
+
+:root[data-theme="high-contrast"] .activity-bar button.is-active {
+  outline: 1px solid var(--line-strong);
+  outline-offset: -2px;
+}

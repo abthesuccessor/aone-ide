@@ -1,0 +1,193 @@
+AiConfigurationStatus:
+  type: object
+  additionalProperties: false
+  required: [configured, provider, model, transport, inferenceAvailable]
+  properties:
+    configured:
+      type: boolean
+    provider:
+      type: [string, 'null']
+      enum: [openai, anthropic, ollama, codex, claude, null]
+    model:
+      type: [string, 'null']
+    transport:
+      type: [string, 'null']
+      enum: [api, local_http, cli, null]
+    inferenceAvailable:
+      type: boolean
+ConfigureHostedAiRequest:
+  type: object
+  additionalProperties: false
+  required: [provider, apiKey]
+  properties:
+    provider:
+      type: string
+      enum: [openai, anthropic]
+    apiKey:
+      type: string
+      minLength: 1
+      maxLength: 16384
+      writeOnly: true
+      description: Provider credential accepted by Rust and retained only in backend-owned zeroizing memory.
+    model:
+      type: string
+      minLength: 1
+      maxLength: 120
+      pattern: '^[A-Za-z0-9._:/-]+$'
+ConfigureOllamaRequest:
+  type: object
+  additionalProperties: false
+  required: [endpoint, model]
+  properties:
+    endpoint:
+      type: string
+      minLength: 1
+      maxLength: 256
+      format: uri
+      description: Loopback HTTP Ollama base URL or API endpoint.
+    model:
+      type: string
+      minLength: 1
+      maxLength: 120
+      pattern: '^[A-Za-z0-9._:/-]+$'
+ConfigureAiCliRequest:
+  type: object
+  additionalProperties: false
+  required: [adapter]
+  properties:
+    adapter:
+      type: string
+      enum: [codex, claude]
+AiCliAdapterStatus:
+  type: object
+  additionalProperties: false
+  required: [id, label, installed, readiness, detail]
+  properties:
+    id:
+      type: string
+      enum: [codex, claude, copilot]
+    label:
+      type: string
+    installed:
+      type: boolean
+    readiness:
+      type: string
+      enum: [ready, not_installed, not_supported, authentication_required, error]
+    version:
+      type: string
+    detail:
+      type: string
+AiCliAdapterStatuses:
+  type: array
+  items:
+    $ref: '#/AiCliAdapterStatus'
+AiExplainRequest:
+  type: object
+  additionalProperties: false
+  required: [workspaceId, question, nodeIds, runtimeEventIds]
+  properties:
+    workspaceId:
+      type: string
+      minLength: 1
+      maxLength: 200
+    question:
+      type: string
+      description: Compatibility field; Rust uses a fixed task instead of this value.
+    nodeIds:
+      type: array
+      maxItems: 24
+      x-aone-max-total-evidence-items: 24
+      items:
+        type: string
+    runtimeEventIds:
+      type: array
+      maxItems: 0
+      description: Compatibility field. It must be empty until event-specific native provider consent is implemented.
+      items:
+        type: string
+AiExplainProjectEnvironmentRequest:
+  type: object
+  additionalProperties: false
+  required: [workspaceId, reportId]
+  properties:
+    workspaceId:
+      type: string
+      minLength: 1
+      maxLength: 200
+    reportId:
+      type: string
+      minLength: 1
+      maxLength: 160
+AiProjectAgentRequest:
+  type: object
+  additionalProperties: false
+  required: [workspaceId, reportId, question]
+  properties:
+    workspaceId:
+      type: string
+      minLength: 1
+      maxLength: 200
+    reportId:
+      type: string
+      minLength: 1
+      maxLength: 160
+    question:
+      type: string
+      minLength: 1
+      maxLength: 1200
+      x-aone-max-utf8-bytes: 4096
+      description: Engineer-authored question treated as untrusted data and sent only after per-call native consent.
+EvidenceReference:
+  type: object
+  additionalProperties: false
+  required: [kind, id, label, evidence]
+  properties:
+    kind:
+      type: string
+    id:
+      type: string
+    label:
+      type: string
+    evidence:
+      $ref: ./graph.yaml#/EvidenceKind
+AiExplanation:
+  type: object
+  additionalProperties: false
+  required: [answer, evidence, model]
+  properties:
+    answer:
+      type: string
+    evidence:
+      type: array
+      items:
+        $ref: '#/EvidenceReference'
+    model:
+      type: string
+AiProjectAgentErrorCode:
+  type: string
+  enum: [cancelled, notConfigured, invalidRequest, workspaceChanged, providerFailed]
+AiProjectAgentResponse:
+  type: object
+  additionalProperties: false
+  required: [status]
+  description: >-
+    Discriminated outcome. Completed responses contain answer, evidence, and
+    model; error responses contain code, message, and retryable.
+  properties:
+    status:
+      type: string
+      enum: [completed, error]
+    answer:
+      type: string
+    evidence:
+      type: array
+      items:
+        $ref: '#/EvidenceReference'
+    model:
+      type: string
+    code:
+      $ref: '#/AiProjectAgentErrorCode'
+    message:
+      type: string
+    retryable:
+      type: boolean

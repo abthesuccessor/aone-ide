@@ -1,0 +1,274 @@
+.force-graph {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--ink-950);
+}
+
+.force-graph-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.force-graph-hit-area {
+  fill: url("#force-dot-grid");
+  cursor: grab;
+}
+
+.force-graph-hit-area:active { cursor: grabbing; }
+
+.force-link {
+  fill: none;
+  stroke: color-mix(in srgb, var(--text-muted) 52%, var(--line));
+  stroke-linecap: round;
+  stroke-width: 0.8;
+  opacity: 0.38;
+  transition: opacity var(--duration-quick) ease, stroke var(--duration-quick) ease;
+}
+
+.force-link.is-observed {
+  stroke: var(--observed);
+  stroke-width: 1.1;
+  opacity: 0.68;
+}
+
+.force-link.is-highlighted {
+  stroke: var(--amber-strong);
+  stroke-width: 1.7;
+  opacity: 0.95;
+}
+
+.force-link.is-git-change {
+  stroke: var(--observed);
+  opacity: 0.72;
+}
+
+.force-link.is-git-insert,
+.force-link.is-git-remove {
+  stroke: var(--danger);
+}
+
+.force-link.is-dimmed { opacity: 0.07; }
+
+.force-node {
+  cursor: pointer;
+  outline: none;
+  transition: opacity var(--duration-quick) ease;
+}
+
+.force-node-bubble {
+  fill: var(--force-node-color, var(--text-muted));
+  stroke: color-mix(in srgb, var(--paper) 72%, transparent);
+  stroke-width: 0.9;
+  transition: filter var(--duration-quick) ease, stroke-width var(--duration-quick) ease;
+}
+
+.force-node:hover .force-node-bubble,
+.force-node:focus-visible .force-node-bubble {
+  filter: brightness(1.22);
+  stroke: var(--paper);
+  stroke-width: 1.5;
+}
+
+.force-node.is-dimmed { opacity: 0.16; }
+.force-node.is-stage-trigger { --force-node-color: #9b72cf; }
+.force-node.is-stage-api { --force-node-color: #4ec9b0; }
+.force-node.is-stage-backend { --force-node-color: #569cd6; }
+.force-node.is-stage-service { --force-node-color: #d7ba7d; }
+.force-node.is-stage-data { --force-node-color: #ce9178; }
+.force-node.is-stage-external { --force-node-color: #c586c0; }
+
+.force-node.is-git-changed .force-node-bubble {
+  fill: var(--observed);
+  stroke: color-mix(in srgb, var(--observed) 68%, var(--paper));
+  stroke-width: 1.6;
+}
+
+.force-node.is-git-insert .force-node-bubble,
+.force-node.is-git-remove .force-node-bubble {
+  fill: var(--danger);
+  stroke: color-mix(in srgb, var(--danger) 68%, var(--paper));
+}
+
+.force-node-halo {
+  fill: color-mix(in srgb, var(--observed) 12%, transparent);
+  stroke: var(--observed);
+  stroke-width: 1;
+}
+
+.force-node-selection {
+  fill: none;
+  stroke: var(--focus);
+  stroke-width: 2.5;
+}
+
+.force-node.is-new .force-node-bubble {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: force-node-enter 420ms var(--ease-smooth-out) both;
+}
+
+@keyframes force-node-enter {
+  from { opacity: 0; transform: scale(0.2); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.force-node-label {
+  fill: var(--text-secondary);
+  font: 7.5px var(--mono);
+  paint-order: stroke;
+  pointer-events: none;
+  stroke: var(--ink-950);
+  stroke-linejoin: round;
+  stroke-width: 3px;
+  transition: opacity var(--duration-quick) ease;
+}
+
+.force-node-label.is-selected {
+  fill: var(--paper);
+  font-weight: 700;
+}
+
+.force-node-label.is-dimmed { opacity: 0.08; }
+
+.force-graph-controls {
+  position: absolute;
+  z-index: 5;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--ink-850);
+  box-shadow: 0 5px 16px var(--workbench-shadow);
+}
+
+.force-graph-controls button {
+  display: grid;
+  width: 28px;
+  height: 27px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-right: 1px solid var(--line);
+  color: var(--text-muted);
+  background: transparent;
+}
+
+.force-graph-controls button:last-child { border-right: 0; }
+.force-graph-controls button:hover { color: var(--paper); background: var(--ink-700); }
+
+.force-load-more {
+  position: absolute;
+  z-index: 4;
+  right: 10px;
+  bottom: 10px;
+  height: 27px;
+  padding: 0 9px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  background: var(--ink-850);
+  font: 8px var(--mono);
+}
+
+.force-load-more:hover:not(:disabled) { color: var(--paper); background: var(--ink-700); }
+
+.force-graph-legend {
+  position: absolute;
+  z-index: 4;
+  left: 10px;
+  bottom: 10px;
+  display: flex;
+  gap: 9px;
+  padding: 5px 7px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  background: var(--ink-850);
+  font: 7px var(--mono);
+  opacity: 0;
+  transition: opacity var(--duration-quick) ease;
+}
+
+.force-graph:hover .force-graph-legend,
+.force-graph:focus-within .force-graph-legend,
+.force-graph.has-git-changes .force-graph-legend {
+  opacity: 1;
+}
+
+.force-graph-legend span { display: flex; align-items: center; gap: 4px; }
+.force-graph-legend i { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); }
+.force-graph-legend i.is-stage-api { background: #4ec9b0; }
+.force-graph-legend i.is-stage-service { background: #d7ba7d; }
+.force-graph-legend i.is-stage-data { background: #ce9178; }
+.force-graph-legend i.is-git-modify { background: var(--observed); }
+.force-graph-legend i.is-git-insert { background: var(--danger); }
+.force-graph-legend i.is-observed { border: 1px solid var(--observed); background: transparent; }
+
+.force-graph-tooltip {
+  position: absolute;
+  z-index: 8;
+  display: grid;
+  width: 208px;
+  gap: 3px;
+  padding: 8px;
+  pointer-events: none;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  background: var(--ink-850);
+  box-shadow: 0 8px 22px var(--workbench-shadow);
+}
+
+.force-graph-tooltip strong {
+  overflow: hidden;
+  color: var(--paper);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.force-graph-tooltip span,
+.force-graph-tooltip small {
+  overflow: hidden;
+  color: var(--text-muted);
+  font: 7px var(--mono);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.graph-refresh-status {
+  position: absolute;
+  z-index: 7;
+  top: 10px;
+  left: 10px;
+  max-width: min(420px, calc(100% - 160px));
+  padding: 6px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  background: var(--ink-850);
+  font: 8px var(--mono);
+}
+
+.graph-refresh-status.is-error { border-color: var(--danger); color: var(--danger); }
+
+@media (prefers-reduced-motion: reduce) {
+  .force-node,
+  .force-link,
+  .force-node-label,
+  .force-node-bubble { transition: none; }
+  .force-node.is-new .force-node-bubble { animation: none; }
+}
+
+@media (max-width: 920px) {
+  .force-graph-legend span:nth-child(2),
+  .force-graph-legend span:nth-child(3) { display: none; }
+}

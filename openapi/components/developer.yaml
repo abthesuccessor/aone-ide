@@ -1,0 +1,440 @@
+IpcErrorResponse:
+  description: Tauri invocation rejected by the Rust authority boundary.
+  content:
+    text/plain:
+      schema:
+        $ref: ./common.yaml#/ErrorMessage
+WriteWorkspaceFileRequest:
+  type: object
+  additionalProperties: false
+  required: [workspaceId, relativePath, content, expectedContentHash]
+  properties:
+    workspaceId:
+      type: string
+      minLength: 1
+      maxLength: 256
+      description: Backend-issued identity of the workspace whose file was read.
+    relativePath:
+      type: string
+      minLength: 1
+      maxLength: 16384
+    content:
+      type: string
+      maxLength: 2097152
+    expectedContentHash:
+      type: string
+      pattern: '^[0-9A-Fa-f]{64}$'
+FormatDocumentRequest:
+  type: object
+  additionalProperties: false
+  required: [workspaceId, relativePath, content, expectedContentHash, tabSize, insertSpaces, printWidth]
+  properties:
+    workspaceId:
+      type: string
+      minLength: 1
+      maxLength: 256
+      description: Backend-issued identity of the workspace whose file was read.
+    relativePath:
+      type: string
+      minLength: 1
+      maxLength: 16384
+    content:
+      type: string
+      maxLength: 2097152
+    expectedContentHash:
+      type: string
+      pattern: '^[0-9A-Fa-f]{64}$'
+    tabSize:
+      type: integer
+      minimum: 1
+      maximum: 16
+    insertSpaces:
+      type: boolean
+    printWidth:
+      type: integer
+      minimum: 40
+      maximum: 500
+FormatterCapability:
+  type: object
+  additionalProperties: false
+  required: [language, formatter, available, external]
+  properties:
+    language:
+      type: string
+    formatter:
+      type: string
+    available:
+      type: boolean
+    external:
+      type: boolean
+FormatterCapabilities:
+  type: array
+  items:
+    $ref: '#/FormatterCapability'
+FormatDocumentResult:
+  type: object
+  additionalProperties: false
+  required: [content, formatter, changed, usedExternalTool]
+  properties:
+    content:
+      type: string
+      maxLength: 2097152
+    formatter:
+      type: string
+    changed:
+      type: boolean
+    usedExternalTool:
+      type: boolean
+TerminalProfile:
+  type: object
+  additionalProperties: false
+  required: [id, label, shellPath]
+  properties:
+    id:
+      type: string
+    label:
+      type: string
+    shellPath:
+      type: string
+TerminalProfiles:
+  type: array
+  items:
+    $ref: '#/TerminalProfile'
+TerminalOpenRequest:
+  type: object
+  additionalProperties: false
+  required: [profileId, columns, rows]
+  properties:
+    profileId:
+      type: string
+    columns:
+      type: integer
+      minimum: 0
+      maximum: 65535
+      description: Rust clamps the PTY to 2 through 500 columns.
+    rows:
+      type: integer
+      minimum: 0
+      maximum: 65535
+      description: Rust clamps the PTY to 1 through 300 rows.
+TerminalOpenResult:
+  type: object
+  additionalProperties: false
+  required: [sessionId, profileId, shellLabel, cwd]
+  properties:
+    sessionId:
+      type: string
+      maxLength: 96
+    profileId:
+      type: string
+    shellLabel:
+      type: string
+    cwd:
+      type: string
+TerminalWriteRequest:
+  type: object
+  additionalProperties: false
+  required: [sessionId, data, encoding]
+  properties:
+    sessionId:
+      type: string
+      maxLength: 96
+    data:
+      type: string
+      maxLength: 87384
+      description: At most 64 KiB decoded; the larger bound permits base64.
+    encoding:
+      type: string
+      enum: [text, base64]
+TerminalResizeRequest:
+  type: object
+  additionalProperties: false
+  required: [sessionId, columns, rows]
+  properties:
+    sessionId:
+      type: string
+      maxLength: 96
+    columns:
+      type: integer
+      minimum: 0
+      maximum: 65535
+    rows:
+      type: integer
+      minimum: 0
+      maximum: 65535
+TerminalCloseRequest:
+  type: object
+  additionalProperties: false
+  required: [sessionId]
+  properties:
+    sessionId:
+      type: string
+      maxLength: 96
+TerminalActionResult:
+  type: object
+  additionalProperties: false
+  required: [accepted]
+  properties:
+    accepted:
+      type: boolean
+TerminalEvent:
+  type: object
+  additionalProperties: false
+  required: [sessionId, kind, timestamp]
+  properties:
+    sessionId:
+      type: string
+      maxLength: 96
+    kind:
+      type: string
+      enum: [data, exit, error]
+    timestamp:
+      type: string
+    data:
+      type: string
+      description: Base64 terminal output, present only for data events.
+    encoding:
+      type: string
+      enum: [base64]
+    byteLength:
+      type: integer
+      minimum: 0
+      maximum: 16384
+    exitCode:
+      type: integer
+      minimum: 0
+    detail:
+      type: string
+GitFileStatus:
+  type: object
+  additionalProperties: false
+  required: [relativePath, indexStatus, workingTreeStatus, staged, conflicted]
+  properties:
+    relativePath:
+      type: string
+      maxLength: 4096
+    indexStatus:
+      type: string
+      maxLength: 1
+    workingTreeStatus:
+      type: string
+      maxLength: 1
+    staged:
+      type: boolean
+    conflicted:
+      type: boolean
+GitStatusResult:
+  type: object
+  additionalProperties: false
+  required: [isRepository, files]
+  properties:
+    isRepository:
+      type: boolean
+    branch:
+      type: string
+    head:
+      type: string
+    files:
+      type: array
+      items:
+        $ref: '#/GitFileStatus'
+GitDiffRequest:
+  type: object
+  additionalProperties: false
+  required: [relativePath, staged]
+  properties:
+    relativePath:
+      type: string
+      maxLength: 4096
+    staged:
+      type: boolean
+GitDiffResult:
+  type: object
+  additionalProperties: false
+  required: [relativePath, staged, content, truncated, comparisonTruncated]
+  properties:
+    relativePath:
+      type: string
+    staged:
+      type: boolean
+    content:
+      type: string
+      maxLength: 524288
+    truncated:
+      type: boolean
+    originalContent:
+      type: string
+      maxLength: 2097152
+    modifiedContent:
+      type: string
+      maxLength: 2097152
+    comparisonTruncated:
+      type: boolean
+GitPathsRequest:
+  type: object
+  additionalProperties: false
+  required: [paths]
+  properties:
+    paths:
+      type: array
+      minItems: 1
+      maxItems: 200
+      items:
+        type: string
+        minLength: 1
+        maxLength: 4096
+      description: Aggregate path text is limited to 64 KiB by Rust.
+GitCommitRequest:
+  type: object
+  additionalProperties: false
+  required: [message]
+  properties:
+    message:
+      type: string
+      minLength: 1
+      maxLength: 4096
+GitMutationResult:
+  type: object
+  additionalProperties: false
+  required: [ok, summary]
+  properties:
+    ok:
+      type: boolean
+    summary:
+      type: string
+ToolConfigurationKind:
+  type: string
+  enum: [mcp, cli, agent, skill, instructions, rules]
+ToolInspectionState:
+  type: string
+  enum: [notInspected, found, notFound]
+ToolConfigurationScope:
+  type: string
+  enum: [home, workspace]
+ToolConfiguration:
+  type: object
+  additionalProperties: false
+  required: [id, label, company, kind, scope, pathHint, configurationState, cliState]
+  properties:
+    id:
+      type: string
+    label:
+      type: string
+    company:
+      type: string
+    kind:
+      $ref: '#/ToolConfigurationKind'
+    scope:
+      $ref: '#/ToolConfigurationScope'
+    pathHint:
+      type: string
+    configurationState:
+      $ref: '#/ToolInspectionState'
+    cliState:
+      $ref: '#/ToolInspectionState'
+ToolConfigurations:
+  type: array
+  items:
+    $ref: '#/ToolConfiguration'
+ToolConfigurationOpenRequest:
+  type: object
+  additionalProperties: false
+  required: [toolId, createIfMissing]
+  properties:
+    toolId:
+      type: string
+      enum:
+        - codex
+        - claude-desktop
+        - cursor
+        - gemini-cli
+        - vscode-workspace-mcp
+        - workspace-agents-md
+        - claude-workspace-instructions
+        - gemini-workspace-instructions
+        - cursor-project-rule
+        - copilot-workspace-instructions
+        - portable-project-skill
+    createIfMissing:
+      type: boolean
+ToolConfigurationOpenResult:
+  type: object
+  additionalProperties: false
+  required: [opened, created, pathHint]
+  properties:
+    opened:
+      type: boolean
+    created:
+      type: boolean
+    pathHint:
+      type: string
+WriteWorkspaceFileArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: '#/WriteWorkspaceFileRequest'
+FormatDocumentArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: '#/FormatDocumentRequest'
+TerminalOpenArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: '#/TerminalOpenRequest'
+TerminalWriteArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: '#/TerminalWriteRequest'
+TerminalResizeArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: '#/TerminalResizeRequest'
+TerminalCloseArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: '#/TerminalCloseRequest'
+GitDiffArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: '#/GitDiffRequest'
+GitPathsArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: '#/GitPathsRequest'
+GitCommitArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: '#/GitCommitRequest'
+ToolConfigurationOpenArgs:
+  type: object
+  additionalProperties: false
+  required: [request]
+  properties:
+    request:
+      $ref: '#/ToolConfigurationOpenRequest'

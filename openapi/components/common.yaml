@@ -1,0 +1,27 @@
+ErrorMessage:
+  type: string
+  description: Serialized backend error returned as a rejected Tauri invocation.
+AppSnapshot:
+  type: object
+  additionalProperties: false
+  required: [version, runtimeEventCount]
+  properties:
+    version:
+      type: string
+    workspace:
+      $ref: ./workspace.yaml#/WorkspaceSummary
+    runtimeEventCount:
+      type: integer
+      minimum: 0
+EnvLoadResult:
+  type: object
+  additionalProperties: false
+  required: [names, loadedCount]
+  properties:
+    names:
+      type: array
+      items:
+        type: string
+    loadedCount:
+      type: integer
+      minimum: 0

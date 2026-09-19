@@ -1,0 +1,173 @@
+InspectProjectEnvironmentRequest:
+  type: object
+  additionalProperties: false
+  required: [workspaceId]
+  properties:
+    workspaceId:
+      type: string
+      minLength: 1
+      maxLength: 200
+      description: Backend-issued identity of the currently open workspace.
+ProjectStackConfidence:
+  type: string
+  enum: [confirmed, inferred]
+ProjectEnvironmentEvidence:
+  type: object
+  additionalProperties: false
+  required: [relativePath, detail]
+  properties:
+    relativePath:
+      type: string
+      maxLength: 512
+    detail:
+      type: string
+      maxLength: 500
+ProjectStack:
+  type: object
+  additionalProperties: false
+  required: [id, label, confidence, evidence]
+  properties:
+    id:
+      type: string
+      maxLength: 100
+    label:
+      type: string
+      maxLength: 200
+    confidence:
+      $ref: '#/ProjectStackConfidence'
+    evidence:
+      type: array
+      maxItems: 8
+      items:
+        $ref: '#/ProjectEnvironmentEvidence'
+ProjectToolStatus:
+  type: string
+  enum: [available, missing, unverified]
+ProjectTool:
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - label
+    - category
+    - required
+    - status
+    - alternateCanonicalPaths
+    - versionArgs
+    - usedBy
+  properties:
+    id:
+      type: string
+      maxLength: 100
+    label:
+      type: string
+      maxLength: 200
+    category:
+      type: string
+      maxLength: 100
+    required:
+      type: boolean
+    status:
+      $ref: '#/ProjectToolStatus'
+    canonicalPath:
+      type: string
+      maxLength: 4096
+      description: Canonical path discovered only after native inspection consent.
+    alternateCanonicalPaths:
+      type: array
+      maxItems: 3
+      items:
+        type: string
+        maxLength: 4096
+    version:
+      type: string
+      maxLength: 240
+    versionArgs:
+      type: array
+      maxItems: 4
+      items:
+        type: string
+        maxLength: 80
+    probeError:
+      type: string
+      maxLength: 160
+      description: Generic non-output error; stdout, stderr, and secret values are never returned.
+    usedBy:
+      type: array
+      maxItems: 16
+      items:
+        type: string
+        maxLength: 100
+ProjectEnvironmentRecommendationKind:
+  type: string
+  enum: [run-profile, tool, environment]
+ProjectEnvironmentRecommendationSeverity:
+  type: string
+  enum: [recommended, optional, warning]
+ProjectEnvironmentRecommendation:
+  type: object
+  additionalProperties: false
+  required: [id, title, summary, kind, severity, evidence]
+  properties:
+    id:
+      type: string
+      maxLength: 160
+    title:
+      type: string
+      maxLength: 240
+    summary:
+      type: string
+      maxLength: 1000
+    kind:
+      $ref: '#/ProjectEnvironmentRecommendationKind'
+    severity:
+      $ref: '#/ProjectEnvironmentRecommendationSeverity'
+    evidence:
+      type: array
+      maxItems: 8
+      items:
+        $ref: '#/ProjectEnvironmentEvidence'
+    runProfileId:
+      type: string
+      maxLength: 160
+ProjectEnvironmentReport:
+  type: object
+  additionalProperties: false
+  required:
+    - reportId
+    - workspaceId
+    - inspectedAt
+    - versionProbeApproved
+    - stacks
+    - tools
+    - recommendations
+  properties:
+    reportId:
+      type: string
+      maxLength: 160
+    workspaceId:
+      type: string
+      maxLength: 200
+    inspectedAt:
+      type: string
+    versionProbeApproved:
+      type: boolean
+    stacks:
+      type: array
+      maxItems: 32
+      items:
+        $ref: '#/ProjectStack'
+    tools:
+      type: array
+      maxItems: 64
+      items:
+        $ref: '#/ProjectTool'
+    recommendations:
+      type: array
+      maxItems: 64
+      items:
+        $ref: '#/ProjectEnvironmentRecommendation'
+OptionalProjectEnvironmentReport:
+  oneOf:
+    - $ref: '#/ProjectEnvironmentReport'
+    - type: 'null'

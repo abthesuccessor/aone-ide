@@ -1,0 +1,66 @@
+CloneGithubRepository:
+  post:
+    operationId: cloneGithubRepository
+    tags: [project-onboarding]
+    summary: Confirm, shallow-clone one public GitHub repository into Documents, and open it.
+    x-aone-tauri-command: clone_github_repository
+    x-aone-native-consent: confirmation-before-network
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./onboarding.yaml#/CloneGithubRepositoryArgs
+    responses:
+      '200':
+        description: Created and installed workspace.
+        content:
+          application/json:
+            schema:
+              $ref: ./onboarding.yaml#/ProjectBootstrapResult
+      default:
+        $ref: ./developer.yaml#/IpcErrorResponse
+CreateDocumentsProject:
+  post:
+    operationId: createDocumentsProject
+    tags: [project-onboarding]
+    summary: Confirm, create one non-overwriting project directly under Documents, and open it.
+    x-aone-tauri-command: create_documents_project
+    x-aone-native-consent: confirmation-before-filesystem-mutation
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./onboarding.yaml#/CreateDocumentsProjectArgs
+    responses:
+      '200':
+        description: Created and installed workspace.
+        content:
+          application/json:
+            schema:
+              $ref: ./onboarding.yaml#/ProjectBootstrapResult
+      default:
+        $ref: ./developer.yaml#/IpcErrorResponse
+InspectGitOnboarding:
+  post:
+    operationId: inspectGitOnboarding
+    tags: [project-onboarding]
+    summary: Confirm and read bounded sanitized Git identity, remote, and public-key metadata.
+    x-aone-tauri-command: inspect_git_onboarding
+    x-aone-native-consent: confirmation-before-local-inspection
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ./onboarding.yaml#/InspectGitOnboardingArgs
+    responses:
+      '200':
+        description: Sanitized Git onboarding report, or null when consent is declined.
+        content:
+          application/json:
+            schema:
+              $ref: ./onboarding.yaml#/OptionalGitOnboardingReport
+      default:
+        $ref: ./developer.yaml#/IpcErrorResponse

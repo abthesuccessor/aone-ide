@@ -1,0 +1,354 @@
+.side-feature-panel {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--line);
+  background: var(--ink-900);
+}
+
+.side-feature-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 52px;
+  padding: 7px 9px 7px 11px;
+  border-bottom: 1px solid var(--line);
+}
+
+.side-feature-heading > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.side-feature-heading span {
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.side-feature-heading strong {
+  overflow: hidden;
+  color: var(--paper);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.side-feature-heading button,
+.git-file > button:last-child {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  color: var(--text-muted);
+  background: transparent;
+}
+
+.side-feature-heading button:hover,
+.git-file > button:last-child:hover:not(:disabled) {
+  color: var(--paper);
+  background: var(--ink-750);
+}
+
+.side-feature-empty {
+  display: flex;
+  min-height: 140px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px;
+  color: var(--text-muted);
+  font-size: 10px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.side-feature-error {
+  margin: 8px;
+  padding: 8px;
+  border: 1px solid var(--danger);
+  border-radius: 3px;
+  color: var(--danger);
+  background: var(--danger-wash);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.commit-box {
+  display: grid;
+  gap: 5px;
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.commit-box textarea {
+  min-height: 50px;
+  resize: vertical;
+  padding: 7px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  outline: 0;
+  color: var(--text);
+  background: var(--ink-950);
+  font-size: 10px;
+}
+
+.commit-box textarea:focus {
+  border-color: var(--focus);
+}
+
+.commit-box button {
+  display: inline-flex;
+  height: 27px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid var(--amber);
+  border-radius: 3px;
+  color: var(--workbench-primary-foreground);
+  background: var(--amber);
+  font-size: 9px;
+  font-weight: 650;
+}
+
+.git-files {
+  min-height: 0;
+  overflow: auto;
+  padding: 4px;
+}
+
+.git-load-more {
+  width: calc(100% - 8px);
+  margin: 4px;
+}
+
+.git-file {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 25px;
+  align-items: center;
+  border-radius: 3px;
+  content-visibility: auto;
+  contain-intrinsic-block-size: 30px;
+}
+
+.git-file:hover {
+  background: var(--ink-750);
+}
+
+.git-file.is-active {
+  background: var(--workbench-selection);
+  box-shadow: inset 2px 0 var(--focus);
+}
+
+.git-file.is-active .git-file-name {
+  color: var(--paper);
+}
+
+.git-file-name {
+  display: grid;
+  grid-template-columns: 17px minmax(0, 1fr) 17px;
+  align-items: center;
+  min-width: 0;
+  height: 27px;
+  gap: 3px;
+  padding: 0 4px;
+  border: 0;
+  color: var(--text-secondary);
+  background: transparent;
+  text-align: left;
+}
+
+.git-file-name span {
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.git-file-name b {
+  color: var(--inferred);
+  font-family: var(--mono);
+  font-size: 10px;
+  text-align: center;
+}
+
+.git-file-name b.is-conflict {
+  color: var(--danger);
+}
+
+.git-diff-preview {
+  display: grid;
+  grid-template-rows: 28px minmax(0, 1fr);
+  min-height: 130px;
+  max-height: 45%;
+  border-top: 1px solid var(--line-strong);
+  background: var(--ink-950);
+}
+
+.git-diff-preview header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 7px;
+  color: var(--text-muted);
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.git-diff-preview header button {
+  padding: 0;
+  border: 0;
+  color: var(--text-muted);
+  background: transparent;
+  font-size: 8px;
+}
+
+.git-diff-preview pre {
+  margin: 0;
+  padding: 8px;
+  overflow: auto;
+  color: var(--text-secondary);
+  font-family: var(--mono);
+  font-size: 8px;
+  line-height: 1.5;
+  white-space: pre;
+}
+
+.tool-config-note {
+  margin: 0;
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text-muted);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.tool-config-consent {
+  display: grid;
+  gap: 7px;
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tool-config-consent p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.tool-config-consent button {
+  justify-self: stretch;
+  height: 27px;
+  font-size: 9px;
+}
+
+.tool-config-list {
+  min-height: 0;
+  overflow: auto;
+  padding: 6px;
+}
+
+.tool-config-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 7px;
+  margin-bottom: 5px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--ink-850);
+}
+
+.tool-config-icon {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border-radius: 4px;
+  color: var(--amber-strong);
+  background: var(--amber-wash);
+}
+
+.tool-config-card > div:nth-child(2) {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+  padding-right: 54px;
+}
+
+.tool-config-card strong {
+  color: var(--paper);
+  font-size: 10px;
+}
+
+.tool-config-card span,
+.tool-config-card code {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tool-config-state {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-muted);
+  font-size: 8px;
+}
+
+.tool-config-state i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.tool-config-state i.is-ready {
+  background: var(--observed);
+}
+
+.tool-config-state i.is-unknown {
+  border: 1px solid var(--text-muted);
+  background: transparent;
+}
+
+.tool-config-state small {
+  margin-left: auto;
+}
+
+.tool-config-kind {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  max-width: 52px;
+  padding: 2px 4px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  color: var(--text-secondary) !important;
+  background: var(--ink-800);
+  font-size: 7px !important;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tool-config-card > button {
+  grid-column: 1 / -1;
+  height: 27px;
+  font-size: 9px;
+}

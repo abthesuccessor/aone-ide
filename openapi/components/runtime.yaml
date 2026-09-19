@@ -1,0 +1,452 @@
+RunProfile:
+  type: object
+  additionalProperties: false
+  required: [id, name, kind, executable, args, requiredEnv, source]
+  properties:
+    id:
+      type: string
+    name:
+      type: string
+    kind:
+      type: string
+    executable:
+      type: string
+    args:
+      type: array
+      items:
+        type: string
+    cwdRelative:
+      type: string
+    requiredEnv:
+      type: array
+      items:
+        type: string
+    source:
+      type: string
+StartRunRequest:
+  type: object
+  additionalProperties: false
+  required: [profileId, envNames, observe, debug]
+  properties:
+    profileId:
+      type: string
+    envNames:
+      type: array
+      maxItems: 128
+      items:
+        type: string
+        maxLength: 128
+        x-aone-max-bytes: 128
+    observe:
+      type: boolean
+      default: false
+      description: >-
+        Enables only explicitly instrumented AONE_TRACE_V1 JSONL emitted by the
+        launched child after an explicit Run or Debug action. Browser refresh and uninstrumented
+        application internals are not observed. Process-reported source matches
+        remain candidate/inferred correlations and never upgrade static facts.
+    debug:
+      type: boolean
+      default: false
+      description: >-
+        Enables the nonce-bound AONE_DEBUG_V1 cooperative safe-point protocol
+        for an explicitly instrumented managed child. Requires observe=true.
+        This is not DAP, OS suspension, browser interception, or arbitrary
+        uninstrumented line debugging; stdin is reserved for fixed controls.
+StartRunResult:
+  type: object
+  additionalProperties: false
+  required: [runId]
+  properties:
+    runId:
+      type: string
+StopRunRequest:
+  type: object
+  additionalProperties: false
+  required: [runId]
+  properties:
+    runId:
+      type: string
+StopRunResult:
+  type: object
+  additionalProperties: false
+  required: [stopped]
+  properties:
+    stopped:
+      type: boolean
+ListRuntimeEventsRequest:
+  type: object
+  additionalProperties: false
+  properties:
+    limit:
+      type: integer
+      minimum: 1
+      maximum: 2000
+      default: 250
+RuntimeEvent:
+  type: object
+  additionalProperties: false
+  required: [id, kind, timestamp, label, evidence, metadata]
+  properties:
+    id:
+      type: string
+    runId:
+      type: string
+    kind:
+      type: string
+    timestamp:
+      type: string
+    label:
+      type: string
+    evidence:
+      $ref: ./graph.yaml#/EvidenceKind
+    sourceNodeId:
+      type: string
+    traceId:
+      type: string
+    metadata:
+      $ref: ./graph.yaml#/GraphMetadata
+StartOtlpReceiverRequest:
+  type: object
+  additionalProperties: false
+  properties:
+    preferredPort:
+      type: integer
+      minimum: 0
+      maximum: 65535
+      default: 4318
+      description: Port 0 requests a system-selected loopback port; non-zero ports below 1024 are rejected.
+OtlpReceiverLifecycle:
+  type: string
+  enum: [stopped, starting, running, failed]
+OtlpReceiverSnapshot:
+  type: object
+  additionalProperties: false
+  required:
+    - status
+    - protocol
+    - authHeaderName
+    - acceptedSpans
+    - rejectedSpans
+    - traceCount
+    - limitation
+  properties:
+    status:
+      $ref: '#/OtlpReceiverLifecycle'
+    endpoint:
+      type: string
+      description: Backend-selected loopback OTLP trace endpoint.
+    protocol:
+      type: string
+      enum: [http/json]
+    authHeaderName:
+      type: string
+      enum: [x-aone-ingest-token]
+    authHeaderValue:
+      type: string
+      maxLength: 64
+      description: Ephemeral receiver capability token shown only for local exporter configuration.
+    acceptedSpans:
+      type: integer
+      minimum: 0
+      maximum: 8192
+    rejectedSpans:
+      type: integer
+      minimum: 0
+    traceCount:
+      type: integer
+      minimum: 0
+      maximum: 8192
+    startedAt:
+      type: string
+    error:
+      type: string
+    limitation:
+      type: string
+DeleteRuntimeTraceRequest:
+  type: object
+  additionalProperties: false
+  required: [traceId]
+  properties:
+    traceId:
+      type: string
+      minLength: 1
+      maxLength: 128
+DeleteRuntimeTraceResult:
+  type: object
+  additionalProperties: false
+  required: [deletedEvents]
+  properties:
+    deletedEvents:
+      type: integer
+      minimum: 0
+DebugControlAction:
+  type: string
+  enum: [pause, resume, stepInto, stepOver, stop]
+DebugSessionStatus:
+  type: string
+  enum: [starting, running, paused, completed, failed, stopped]
+  description: Backend-owned cooperative-protocol/process lifecycle, not a workflow result.
+DebugSafePointState:
+  type: string
+  enum: [running, paused, workflowCompleted, workflowFailed]
+  description: Process-reported state for one serialized instrumented workflow.
+DebugEventKind:
+  type: string
+  enum: [request, method, line, branch, database, agent, external, response]
+DebugFlowStage:
+  type: string
+  enum: [trigger, api, backend, service, data, external, response]
+DebugBranchOutcome:
+  type: string
+  enum: [then, else, case, loop, shortCircuit, unknown]
+DebugDataPreviewKind:
+  type: string
+  enum: [none, scalar, object, array, rowSet]
+DebugDataField:
+  type: object
+  additionalProperties: false
+  required: [name, valueType, nullable]
+  properties:
+    name:
+      type: string
+      maxLength: 128
+      description: >-
+        Process-reported schema identifier. The protocol has no field-value
+        slot, but cannot prove a reported name does not encode a value.
+    valueType:
+      type: string
+      maxLength: 128
+    nullable:
+      type: boolean
+DebugDataPreview:
+  type: object
+  additionalProperties: false
+  required: [kind, fields, truncated]
+  properties:
+    kind:
+      $ref: '#/DebugDataPreviewKind'
+    typeName:
+      type: string
+      maxLength: 128
+      description: Process-reported type identifier; meaning is not independently verified.
+    fields:
+      type: array
+      maxItems: 32
+      items:
+        $ref: '#/DebugDataField'
+    itemCount:
+      type: integer
+      minimum: 0
+      maximum: 1000000000
+    rowCount:
+      type: integer
+      minimum: 0
+      maximum: 1000000000
+    nullCount:
+      type: integer
+      minimum: 0
+      maximum: 1000000000
+    truncated:
+      type: boolean
+DebugSourceLocation:
+  type: object
+  additionalProperties: false
+  required: [relativePath, line]
+  properties:
+    relativePath:
+      type: string
+      maxLength: 1024
+      description: Process-reported workspace-relative source candidate.
+    line:
+      type: integer
+      minimum: 1
+      maximum: 10000000
+    lineEnd:
+      type: integer
+      minimum: 1
+      maximum: 10000000
+DebugWorkflowEvent:
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - workflowId
+    - sequence
+    - controlEpoch
+    - stepId
+    - kind
+    - label
+    - flowStage
+    - source
+    - safePointState
+    - timestamp
+  properties:
+    id:
+      type: string
+    workflowId:
+      type: string
+      maxLength: 128
+    sequence:
+      type: integer
+      minimum: 1
+      maximum: 2000
+    controlEpoch:
+      type: integer
+      minimum: 0
+    stepId:
+      type: string
+      maxLength: 128
+    parentStepId:
+      type: string
+      maxLength: 128
+    kind:
+      $ref: '#/DebugEventKind'
+    label:
+      type: string
+      maxLength: 240
+      description: Backend-derived label; child-supplied arbitrary labels are not accepted.
+    flowStage:
+      $ref: '#/DebugFlowStage'
+    source:
+      $ref: '#/DebugSourceLocation'
+    safePointState:
+      $ref: '#/DebugSafePointState'
+    branchOutcome:
+      $ref: '#/DebugBranchOutcome'
+    operation:
+      type: string
+      maxLength: 128
+      description: Bounded process-reported semantic identifier, not independently value-free.
+    resource:
+      type: string
+      maxLength: 128
+      description: Bounded process-reported resource identifier, not independently value-free.
+    dataPreview:
+      $ref: '#/DebugDataPreview'
+    timestamp:
+      type: string
+DebugActionCapability:
+  type: object
+  additionalProperties: false
+  required: [supported, cooperative]
+  properties:
+    supported:
+      type: boolean
+    cooperative:
+      type: boolean
+    limitation:
+      type: string
+DebugCapabilities:
+  type: object
+  additionalProperties: false
+  required: [pause, resume, stepInto, stepOver, stop]
+  properties:
+    pause: { $ref: '#/DebugActionCapability' }
+    resume: { $ref: '#/DebugActionCapability' }
+    stepInto: { $ref: '#/DebugActionCapability' }
+    stepOver: { $ref: '#/DebugActionCapability' }
+    stop: { $ref: '#/DebugActionCapability' }
+DebugSessionSnapshot:
+  type: object
+  additionalProperties: false
+  required:
+    - debugSessionId
+    - runId
+    - status
+    - eventCount
+    - controlEpoch
+    - acknowledgedControlEpoch
+    - workflowCount
+    - startedAt
+    - capabilities
+    - limitation
+    - events
+    - eventsTruncated
+  properties:
+    debugSessionId:
+      type: string
+    runId:
+      type: string
+    status:
+      $ref: '#/DebugSessionStatus'
+    eventCount:
+      type: integer
+      minimum: 0
+      maximum: 2000
+    controlEpoch:
+      type: integer
+      minimum: 0
+    acknowledgedControlEpoch:
+      type: integer
+      minimum: 0
+    currentStepId:
+      type: string
+    currentSource:
+      $ref: '#/DebugSourceLocation'
+    pendingAction:
+      $ref: '#/DebugControlAction'
+    pendingControlEpoch:
+      type: integer
+      minimum: 1
+    activeWorkflowId:
+      type: string
+    workflowCount:
+      type: integer
+      minimum: 0
+    lastWorkflowState:
+      $ref: '#/DebugSafePointState'
+    startedAt:
+      type: string
+    endedAt:
+      type: string
+    error:
+      type: string
+    capabilities:
+      $ref: '#/DebugCapabilities'
+    limitation:
+      type: string
+    events:
+      type: array
+      maxItems: 250
+      items:
+        $ref: '#/DebugWorkflowEvent'
+    eventsTruncated:
+      type: boolean
+    eventsStartSequence:
+      type: integer
+      minimum: 1
+GetDebugSessionRequest:
+  type: object
+  additionalProperties: false
+  required: [runId]
+  properties:
+    runId:
+      type: string
+DebugControlRequest:
+  type: object
+  additionalProperties: false
+  required: [runId, debugSessionId, action, expectedSequence, expectedControlEpoch]
+  properties:
+    runId:
+      type: string
+    debugSessionId:
+      type: string
+    action:
+      $ref: '#/DebugControlAction'
+    expectedSequence:
+      type: integer
+      minimum: 0
+      maximum: 2000
+    expectedControlEpoch:
+      type: integer
+      minimum: 0
+DebugControlResult:
+  type: object
+  additionalProperties: false
+  required: [accepted, snapshot]
+  properties:
+    accepted:
+      type: boolean
+    snapshot:
+      $ref: '#/DebugSessionSnapshot'

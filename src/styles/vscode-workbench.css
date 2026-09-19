@@ -1,0 +1,485 @@
+/* VS Code workbench alignment layer.
+   This keeps Aone's React/D3 surfaces while matching the density and chrome
+   proportions developers recognize from VS Code Dark Modern. */
+:root {
+  --vscode-titlebar-height: 35px;
+  --vscode-activity-width: 48px;
+  --vscode-statusbar-height: 22px;
+  --vscode-pane-header-height: 35px;
+  --vscode-ui-font-size: 13px;
+  --vscode-small-font-size: 11px;
+  --vscode-gutter: 4px;
+  --vscode-frame-radius: 0;
+  --vscode-hover-overlay: color-mix(in srgb, var(--paper) 8%, transparent);
+  --vscode-active-overlay: color-mix(in srgb, var(--paper) 12%, transparent);
+}
+
+body {
+  font-size: var(--vscode-ui-font-size);
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+  font-kerning: normal;
+}
+
+.app-shell {
+  grid-template-rows: var(--vscode-titlebar-height) minmax(0, 1fr) var(--vscode-statusbar-height);
+}
+
+/* Native title bar ------------------------------------------------------- */
+.titlebar {
+  min-height: var(--vscode-titlebar-height);
+  height: var(--vscode-titlebar-height);
+  gap: 4px;
+  padding: 0 7px 0 8px;
+  background: var(--workbench-titlebar);
+}
+
+.traffic-lights {
+  flex-basis: 68px;
+  gap: 8px;
+  padding: 0 1px;
+}
+
+.traffic-lights.is-native {
+  flex-basis: 68px;
+}
+
+.titlebar-command-center {
+  width: clamp(300px, 38vw, 600px);
+  height: 24px;
+  gap: 6px;
+  padding: 0 10px;
+  border-color: var(--line-strong);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--ink-700) 68%, var(--ink-900));
+  font-size: 12px;
+}
+
+.titlebar-command-center:focus-visible {
+  outline-width: 1px;
+  outline-offset: 0;
+  border-color: var(--focus);
+}
+
+.titlebar-command-center kbd {
+  padding-left: 10px;
+  font-size: 10px;
+}
+
+.toolbar-actions,
+.run-actions {
+  gap: 2px;
+}
+
+.toolbar-button,
+.env-trigger,
+.icon-button,
+.profile-select-wrap select {
+  min-height: 24px;
+  height: 24px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.toolbar-button,
+.env-trigger {
+  padding: 0 6px;
+}
+
+.profile-select-wrap {
+  min-width: 116px;
+}
+
+.profile-select-wrap select {
+  padding: 0 24px 0 7px;
+}
+
+.env-count,
+.panel-count,
+.tab-count {
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  font-size: 10px;
+}
+
+.scan-progress {
+  top: calc(var(--vscode-titlebar-height) - 1px);
+}
+
+.titlebar-layout-controls {
+  height: 24px;
+  gap: 0;
+  padding-left: 3px;
+}
+
+.layout-control {
+  width: 25px;
+  height: 24px;
+  border-radius: 4px;
+}
+
+/* Workbench shell ------------------------------------------------------- */
+.ide-grid,
+.app-shell.is-onboarding .ide-grid {
+  grid-template-columns: var(--vscode-activity-width) minmax(0, 1fr);
+  column-gap: 0;
+  padding: 0;
+  background: var(--workbench-activitybar);
+}
+
+.activity-bar {
+  padding: 0;
+  background: var(--workbench-activitybar);
+}
+
+.activity-bar button {
+  height: 48px;
+  color: color-mix(in srgb, var(--text-muted) 92%, transparent);
+}
+
+.activity-bar button > .activity-icon {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.activity-bar button::before {
+  top: 0;
+  bottom: 0;
+  width: 2px;
+}
+
+.activity-bar button:hover {
+  color: var(--text);
+  background: var(--vscode-hover-overlay);
+}
+
+.activity-bar button.is-active {
+  color: var(--paper);
+  background: var(--vscode-active-overlay);
+}
+
+.ide-navigator-panel,
+.ide-workbench-panel,
+.ide-inspector-panel,
+.ide-resizable-single {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--vscode-frame-radius);
+  background: var(--ink-950);
+}
+
+.workbench-stage-panel,
+.workbench-console-panel {
+  overflow: hidden;
+  background: var(--ink-950);
+}
+
+.ide-navigator-panel,
+.ide-inspector-panel {
+  background: var(--ink-900);
+}
+
+.resizable-handle {
+  flex-basis: var(--vscode-gutter);
+  background: transparent;
+}
+
+.resizable-handle[aria-orientation="vertical"] {
+  width: var(--vscode-gutter);
+}
+
+.resizable-handle[aria-orientation="horizontal"] {
+  height: var(--vscode-gutter);
+}
+
+.resizable-handle::before {
+  position: absolute;
+  z-index: 1;
+  content: "";
+  background: var(--line);
+}
+
+.resizable-handle[aria-orientation="vertical"]::before {
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 0.5px);
+  width: 1px;
+}
+
+.resizable-handle[aria-orientation="horizontal"]::before {
+  right: 0;
+  bottom: calc(50% - 0.5px);
+  left: 0;
+  height: 1px;
+}
+
+.resizable-handle:hover::before,
+.resizable-handle:focus-visible::before,
+.resizable-handle[data-resize-handle-active]::before {
+  background: var(--focus);
+}
+
+.resizable-handle-grip {
+  display: none;
+}
+
+/* Primary side bar ------------------------------------------------------ */
+.panel-heading,
+.empty-explorer-heading {
+  min-height: var(--vscode-pane-header-height);
+  height: var(--vscode-pane-header-height);
+  padding: 0 12px;
+  border-bottom: 0;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.panel-heading h2 {
+  max-width: none;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.search-field {
+  height: 26px;
+  margin: 0 8px 6px;
+  padding: 0 7px;
+  border-color: var(--line-strong);
+  border-radius: 2px;
+  font-size: 13px;
+  background: var(--ink-700);
+}
+
+.tree-scroll {
+  padding: 0 0 3px;
+}
+
+.tree-row {
+  height: 22px;
+  padding-right: 8px;
+  font-size: 13px;
+}
+
+.tree-row.is-active {
+  background: var(--workbench-selection);
+  box-shadow: none;
+}
+
+.tree-language,
+.workspace-footer {
+  font-size: 10px;
+}
+
+.empty-explorer-actions {
+  gap: 2px;
+  padding: 8px 12px;
+}
+
+.empty-explorer-actions p {
+  margin: 3px 0 8px;
+  font-size: 13px;
+}
+
+.empty-explorer-actions button {
+  height: 34px;
+  padding: 0 6px;
+  font-size: 13px;
+}
+
+.ide-navigator-panel :where(button, input, select, textarea) {
+  font-size: 13px;
+}
+
+.ide-navigator-panel :where(small, .workspace-footer, .tree-language) {
+  font-size: 10px;
+}
+
+/* Editor groups and Aone's enhanced Relationships group ---------------- */
+.workbench.is-empty .workbench-stage,
+.debugger-workbench-frame,
+.code-map-pane,
+.context-api-flow-panel,
+.context-data-panel {
+  border: 0;
+  border-radius: 0;
+}
+
+.code-map-pane {
+  grid-template-rows: var(--vscode-pane-header-height) minmax(0, 1fr);
+}
+
+.code-map-pane-label,
+.context-panel-heading,
+.workspace-context-rail .evidence-heading {
+  min-height: var(--vscode-pane-header-height);
+  height: var(--vscode-pane-header-height);
+  padding: 0 10px;
+  background: var(--ink-900);
+}
+
+.code-map-pane-label > span,
+.context-panel-heading > span,
+.workspace-context-rail .evidence-heading h2 {
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+}
+
+.code-map-pane-label > small,
+.context-panel-heading > small {
+  font-size: 10px;
+}
+
+.source-pane-stack {
+  grid-template-rows: var(--vscode-pane-header-height) minmax(0, 1fr);
+}
+
+.editor-tab-shell {
+  flex-basis: 180px;
+  min-width: 110px;
+  max-width: 220px;
+  font-size: 13px;
+}
+
+.source-view,
+.source-comparison {
+  grid-template-rows: 35px minmax(0, 1fr);
+}
+
+.source-view.is-compact .source-header {
+  min-height: 35px;
+}
+
+.source-path {
+  font-size: 12px;
+}
+
+.source-language,
+.source-range,
+.source-actions button {
+  font-size: 10px;
+}
+
+.relationship-view-switcher {
+  height: 27px;
+}
+
+.relationship-view-switcher button {
+  height: 25px;
+  padding: 0 7px;
+  border-radius: 3px;
+  font: 11px var(--sans);
+}
+
+.relationship-view-switcher button.is-active {
+  color: var(--paper);
+  background: var(--vscode-active-overlay);
+  box-shadow: inset 0 -1px var(--accent);
+}
+
+.force-node-label {
+  font-size: 10px;
+}
+
+.force-graph-controls {
+  top: 8px;
+  right: 8px;
+  border-radius: 3px;
+  box-shadow: 0 2px 8px var(--workbench-shadow);
+}
+
+.force-graph-legend {
+  left: 8px;
+  bottom: 8px;
+  font-size: 10px;
+}
+
+.force-graph-tooltip strong {
+  font-size: 12px;
+}
+
+.force-graph-tooltip span,
+.force-graph-tooltip small,
+.force-load-more,
+.graph-refresh-status {
+  font-size: 10px;
+}
+
+/* Secondary side bar and lower panels ---------------------------------- */
+.workspace-context-rail .evidence-heading .eyebrow {
+  font-size: 9px;
+}
+
+.workspace-context-rail .evidence-heading h2 {
+  max-width: none;
+  font-size: 12px;
+}
+
+.ide-inspector-panel :where(button, input, select, textarea, p) {
+  font-size: 11px;
+}
+
+.ide-inspector-panel small {
+  font-size: 10px;
+}
+
+.data-visualization-panel {
+  grid-template-rows: var(--vscode-pane-header-height) minmax(0, 1fr);
+}
+
+.runtime-data-row {
+  min-height: 18px;
+  font-size: 9px;
+}
+
+.console-panel.is-embedded .runtime-row {
+  min-height: 26px;
+  font-size: 10px;
+}
+
+.console-panel,
+.workbench-console-panel .console-panel {
+  grid-template-rows: 35px minmax(0, 1fr);
+}
+
+.console-panel.is-collapsed,
+.workbench-console-panel .console-panel.is-collapsed {
+  grid-template-rows: 35px 0;
+}
+
+.workbench-console-panel {
+  min-height: 35px;
+}
+
+@media (max-width: 1650px) {
+  .toolbar-button > span {
+    display: none;
+  }
+
+  .toolbar-button {
+    width: 26px;
+    padding: 0;
+  }
+}
+
+@media (max-width: 1200px) {
+  .titlebar-command-center {
+    width: clamp(220px, 32vw, 360px);
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .titlebar-command-center,
+  .toolbar-button,
+  .layout-control,
+  .activity-bar button {
+    transition-duration: 0ms;
+  }
+}

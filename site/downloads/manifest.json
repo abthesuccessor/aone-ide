@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "product": "Aone IDE",
+  "version": "0.1.0",
+  "build": "0.1.0",
+  "channel": "local-test",
+  "publishedAt": null,
+  "artifact": {
+    "url": "",
+    "filename": "",
+    "bytes": 8519003,
+    "sha256": "3852707e6162b7a4dd9b4fa8d6d6c2ab4ec799260c81e25c27c9d0489e86ef5b",
+    "target": "aarch64-apple-darwin",
+    "architecture": "Apple Silicon",
+    "architectures": ["arm64"],
+    "minimumMacos": "15.0",
+    "signed": false,
+    "notarized": false,
+    "publicReady": false
+  }
+}

@@ -1,0 +1,163 @@
+EvidenceKind:
+  type: string
+  enum: [declared, resolved, observed, inferred]
+SourceLocation:
+  type: object
+  additionalProperties: false
+  required: [relativePath, startLine, startColumn, endLine, endColumn]
+  properties:
+    relativePath:
+      type: string
+    startLine:
+      type: integer
+      minimum: 1
+      description: One-based source line.
+    startColumn:
+      type: integer
+      minimum: 1
+      description: One-based UTF-16 code-unit column used by Monaco.
+    endLine:
+      type: integer
+      minimum: 1
+      description: One-based source line; the range end is exclusive.
+    endColumn:
+      type: integer
+      minimum: 1
+      description: One-based UTF-16 code-unit column; the range end is exclusive.
+GraphMetadata:
+  type: object
+  additionalProperties: true
+GraphNode:
+  type: object
+  additionalProperties: false
+  required: [id, kind, label, evidence, metadata]
+  properties:
+    id:
+      type: string
+    kind:
+      type: string
+    label:
+      type: string
+    source:
+      $ref: '#/SourceLocation'
+    language:
+      type: string
+    evidence:
+      $ref: '#/EvidenceKind'
+    metadata:
+      $ref: '#/GraphMetadata'
+GraphEdge:
+  type: object
+  additionalProperties: false
+  required: [id, source, target, kind, evidence, metadata]
+  properties:
+    id:
+      type: string
+    source:
+      type: string
+    target:
+      type: string
+    kind:
+      type: string
+    evidence:
+      $ref: '#/EvidenceKind'
+    confidence:
+      type: number
+      minimum: 0
+      maximum: 1
+    metadata:
+      $ref: '#/GraphMetadata'
+GraphProjection:
+  type: string
+  description: >-
+    neighborhood is the default ordinary bounded graph query. systemOverview
+    selects a deterministic, evidence-backed, high-level projection, defaults
+    to depth 2, caps output at 60 nodes and 120 edges, and adds system-layer
+    placement metadata without changing node evidence. executionFlow requires
+    exactly one selected root and returns a deterministic, statically evidenced
+    workflow page capped at depth 4, 500 nodes, and 2,000 edges. It never claims
+    that a static handler, service, repository, or external call actually ran.
+  enum: [neighborhood, systemOverview, executionFlow]
+  default: neighborhood
+GraphQuery:
+  type: object
+  description: >-
+    Bounded graph selection. Generic depth and limit defaults apply to the
+    neighborhood projection; systemOverview defaults to depth 2 and always
+    caps output at 60 nodes and 120 edges even when a larger limit is supplied.
+    executionFlow requires one root ID; its opaque cursor continues only that
+    root's deterministic link pages and is rejected when reused with another
+    query.
+  additionalProperties: false
+  properties:
+    projection:
+      $ref: '#/GraphProjection'
+    rootIds:
+      type: array
+      maxItems: 50
+      items:
+        type: string
+    query:
+      type: string
+      maxLength: 256
+    nodeKinds:
+      type: array
+      maxItems: 32
+      items:
+        type: string
+        maxLength: 64
+    edgeKinds:
+      type: array
+      maxItems: 32
+      items:
+        type: string
+        maxLength: 64
+    depth:
+      type: integer
+      minimum: 0
+      maximum: 4
+      default: 1
+      description: Defaults to 1 for neighborhood and 2 for systemOverview.
+    limit:
+      type: integer
+      minimum: 1
+      maximum: 500
+      default: 250
+      description: systemOverview always caps the returned projection at 60 nodes and 120 edges.
+    cursor:
+      type: string
+      maxLength: 96
+      description: Opaque query-bound continuation cursor for executionFlow root links.
+    includeTests:
+      type: boolean
+      default: false
+      description: >-
+        Includes test and E2E source facts in executionFlow when true. Scanner
+        hard-denied credential, key, certificate, and secret paths are never included.
+GraphSnapshot:
+  type: object
+  additionalProperties: false
+  required: [nodes, edges, truncated]
+  properties:
+    nodes:
+      type: array
+      items:
+        $ref: '#/GraphNode'
+    edges:
+      type: array
+      items:
+        $ref: '#/GraphEdge'
+    truncated:
+      type: boolean
+      description: True when any applicable node, edge, depth, work, or page bound omitted facts.
+    nextCursor:
+      type: string
+      description: Opaque executionFlow cursor for the next root-link page, when one exists.
+    totalRootLinks:
+      type: integer
+      minimum: 0
+      description: Total eligible links at the selected executionFlow root.
+    omittedRootLinks:
+      type: integer
+      minimum: 0
+      description: Eligible root links not yet returned after this cumulative page.
