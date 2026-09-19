@@ -37,5 +37,10 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.ts"],
     css: true,
     maxWorkers: 2,
+    // Several suites render and page through bounded-but-large fixtures (the
+    // API catalog walks 305 operations). Those land near 4.5s locally, which
+    // leaves no headroom against Vitest's 5s default on slower CI hardware.
+    testTimeout: 20_000,
+    hookTimeout: 20_000,
   },
 });
