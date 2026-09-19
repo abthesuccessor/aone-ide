@@ -14,6 +14,21 @@ path keeps filesystem authority and source snippets behind typed Tauri commands,
 shares transactions with the existing AST graph, starts without a second
 runtime, and remains fully offline.
 
+## Amendment: transactional outbox (2026-09-19)
+
+The SQLite decision above is unchanged. Workspace change notifications now go
+through a transactional outbox table in the same database rather than being
+emitted directly from a mutation.
+
+Emitting straight from a mutation lets facts and notifications diverge: the
+process can exit between a committed transaction and a delivered event, or an
+event can be published for a transaction that later rolls back. Recording the
+event as a row inside the same transaction removes both cases. The watcher
+drains the outbox after each committed batch and acknowledges only after
+emitting, making delivery at-least-once and strictly ordered.
+
+This is a pattern, not a database feature, and needs no additional engine.
+
 ## What the sizes mean
 
 The DMG is a compressed installer, not the workspace database. The current

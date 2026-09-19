@@ -29,6 +29,11 @@ pub(super) struct InspectionSnapshot {
 
 impl InspectionSnapshot {
     pub(super) async fn capture(workspace_root: &Path, git: &Path) -> AoneResult<Self> {
+        // Inspection isolates attribute lookup with `--attr-source`. Confirm the
+        // fixed Git can honour that before inspecting anything, so an older
+        // build is reported instead of quietly inspecting with the repository's
+        // own attribute drivers in play.
+        super::capability::require_attribute_isolation(git).await?;
         let actual_git_dir = resolve_git_dir(workspace_root)?;
         let common_dir = resolve_common_dir(&actual_git_dir)?;
         let objects_path = common_dir.join("objects");

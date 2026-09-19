@@ -42,6 +42,12 @@ impl Drop for WorkspaceWatcher {
     }
 }
 
+/// Tauri event carrying durable workspace records to the renderer.
+const WORKSPACE_EVENTS_NAME: &str = "aone-workspace-events";
+/// Upper bound on records delivered in one drain, so a long backlog cannot
+/// produce an oversized IPC message.
+const MAX_OUTBOX_DRAIN: usize = 200;
+
 pub fn start_workspace_watcher(
     app: AppHandle,
     context: WorkspaceContext,
@@ -101,6 +107,7 @@ pub fn start_workspace_watcher(
                             "aone-workspace-changed",
                             WorkspaceChanged { paths: changed },
                         );
+                        publish_recorded_events(&app, &context);
                     }
                 }
             }
@@ -195,4 +202,25 @@ pub(super) fn enforce_watcher_deadline(deadline: Instant) -> AoneResult<()> {
         ));
     }
     Ok(())
+}
+
+/// Delivers the durable events recorded by the mutations that just committed.
+///
+/// Emitting from the outbox rather than straight from the in-memory result is
+/// what makes the notification trustworthy: a record exists only for work that
+/// actually committed, and it is acknowledged only after it has been emitted,
+/// so an interrupted delivery replays instead of vanishing. Consumers therefore
+/// see each event at least once and must be idempotent.
+fn publish_recorded_events(app: &AppHandle, context: &WorkspaceContext) {
+    let Ok(events) = context.store.lock().pending_events(MAX_OUTBOX_DRAIN) else {
+        return;
+    };
+    let Some(last_sequence) = events.last().map(|record| record.sequence) else {
+        return;
+    };
+    if app.emit(WORKSPACE_EVENTS_NAME, &events).is_err() {
+        // Leave the records pending; the next drain retries them.
+        return;
+    }
+    let _ = context.store.lock().acknowledge_events(last_sequence);
 }

@@ -383,3 +383,43 @@ fn incremental_limits_roll_back_aggregate_byte_and_fact_overflow() {
     assert_eq!(fact_store.counts().unwrap().0, 1);
     assert!(fact_store.get_file("src/second.rs").unwrap().is_none());
 }
+
+#[test]
+fn workspace_mutations_record_their_events_in_the_same_transaction() {
+    let directory = tempdir().unwrap();
+    let mut store = GraphStore::open(&directory.path().join("aone.sqlite")).unwrap();
+
+    // A committed replacement leaves exactly one pending event describing it.
+    store
+        .replace_all(&[indexed_file("src/app.ts", "export const value = 1;\n")])
+        .unwrap();
+    let recorded = super::outbox::pending(store.connection_for_tests(), 10).unwrap();
+    assert_eq!(recorded.len(), 1);
+    assert_eq!(recorded[0].kind, "workspace.replaced");
+    assert_eq!(recorded[0].payload, r#"{"affected":1}"#);
+
+    // A rejected mutation must leave no trace. The limit check runs inside the
+    // transaction, so both the facts and the event roll back together.
+    let refused = store.replace_file_with_limits(
+        &indexed_file("src/big.ts", "export const other = 2;\n"),
+        WorkspaceStoreLimits {
+            max_files: 0,
+            max_source_bytes: 0,
+            max_facts: 0,
+        },
+    );
+    assert!(refused.is_err());
+    let after_failure = super::outbox::pending(store.connection_for_tests(), 10).unwrap();
+    assert_eq!(
+        after_failure, recorded,
+        "a failed mutation must not publish an event"
+    );
+
+    // Acknowledging drains the backlog without disturbing the stored facts.
+    super::outbox::mark_delivered(store.connection_for_tests(), recorded[0].sequence).unwrap();
+    assert_eq!(
+        super::outbox::pending_count(store.connection_for_tests()).unwrap(),
+        0
+    );
+    assert_eq!(store.counts().unwrap().0, 1);
+}

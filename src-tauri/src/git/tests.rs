@@ -93,6 +93,9 @@ fn rejects_symlinked_git_paths() {
 #[cfg(target_os = "macos")]
 #[tokio::test]
 async fn fixed_git_runner_discovers_only_exact_root_and_loads_status() {
+    if !attribute_isolation_available().await {
+        return;
+    }
     let directory = tempdir().expect("temp directory");
     let root = directory.path().canonicalize().expect("canonical root");
     let init = run_git(&root, &["init".into(), "--template=".into()], 64 * 1024)
@@ -225,6 +228,9 @@ async fn fixed_git_runner_discovers_only_exact_root_and_loads_status() {
 #[cfg(target_os = "macos")]
 #[tokio::test]
 async fn status_and_diff_never_execute_repository_process_filters() {
+    if !attribute_isolation_available().await {
+        return;
+    }
     use std::os::unix::fs::PermissionsExt;
 
     let directory = tempdir().expect("temp directory");
@@ -402,4 +408,40 @@ async fn inspection_rejects_a_git_file_pointing_to_an_unrelated_repository() {
     .await
     .expect_err("external Git metadata must be rejected");
     assert!(error.to_string().contains("linked Git worktrees"));
+}
+
+/// Repository inspection requires Git 2.40 for `--attr-source`, and Aone
+/// refuses to inspect without it rather than fall back to repository-controlled
+/// attribute drivers. The Git shipped with current Xcode is 2.39.5, so on such a
+/// machine the behaviour these tests cover is correctly unavailable. Skip there
+/// instead of asserting against an unsupported toolchain; the refusal itself is
+/// covered by `inspection_is_refused_when_git_cannot_isolate_attributes`.
+async fn attribute_isolation_available() -> bool {
+    let available =
+        super::capability::require_attribute_isolation(std::path::Path::new("/usr/bin/git"))
+            .await
+            .is_ok();
+    if !available {
+        eprintln!("skipping: /usr/bin/git predates Git 2.40 attribute isolation");
+    }
+    available
+}
+
+#[tokio::test]
+async fn inspection_is_refused_when_git_cannot_isolate_attributes() {
+    // Whichever Git this machine has, the gate must return a decisive answer:
+    // either inspection is permitted, or it is refused with a message naming
+    // the requirement. It must never silently proceed without isolation.
+    let outcome =
+        super::capability::require_attribute_isolation(std::path::Path::new("/usr/bin/git")).await;
+    match outcome {
+        Ok(()) => {}
+        Err(error) => {
+            let message = error.to_string();
+            assert!(
+                message.contains("2.40"),
+                "refusal must name the required version: {message}"
+            );
+        }
+    }
 }

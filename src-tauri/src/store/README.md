@@ -2,12 +2,15 @@
 
 ## Responsibilities
 
-This feature owns the embedded SQLite graph projection. `GraphStore` opens the database, replaces whole-workspace or per-file facts transactionally, removes deleted paths, lists files, and returns bounded graph snapshots. Persistence and row conversion are separated from traversal so storage changes do not blur query behavior.
+This feature owns the embedded SQLite graph projection. `GraphStore` opens the database, replaces whole-workspace or per-file facts transactionally, removes deleted paths, lists files, and returns bounded graph snapshots. Persistence and row conversion are separated from traversal so storage changes do not blur query behavior. A transactional outbox records what changed in the same transaction as the change itself.
 
 ## Security invariants
 
 - SQLite runs with WAL journaling, foreign keys, a bounded busy timeout, and normal synchronous durability.
 - Every replacement is transactional. Quota failure rolls back the file, nodes, edges, and derived resolution edges together.
+- Workspace events are recorded through the outbox inside the mutating transaction, so a notification exists if and only if the change it describes committed. `enqueue` takes a `&Transaction`, not a `&Connection`, so recording an event outside its transaction is not expressible.
+- Delivery is at-least-once and strictly ordered. Records are acknowledged only after they have been emitted, so an interrupted delivery replays rather than disappears; every consumer must be idempotent.
+- Event payloads are bounded, carry only a count, and never embed source. Drains are capped, and delivered history is pruned while pending records are retained however far behind a consumer has fallen.
 - Whole-workspace replacement suspends only derived FTS triggers and secondary indexes inside the same transaction, rebuilds them before commit, and therefore exposes either the old complete projection or the new complete projection—never an intermediate schema or index.
 - Per-file and aggregate limits cap indexed files, source bytes, and extracted facts.
 - Query roots, depth, nodes, seeds, and edges are bounded before data reaches the renderer.

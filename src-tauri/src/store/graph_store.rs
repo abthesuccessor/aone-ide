@@ -3,6 +3,7 @@ use std::collections::{HashMap, HashSet};
 use rusqlite::{Connection, OptionalExtension, functions::FunctionFlags, params, params_from_iter};
 use serde_json::Value;
 
+use super::outbox::OutboxRecord;
 use super::{
     bulk_persistence::replace_workspace_files,
     limits::{
@@ -49,6 +50,9 @@ impl GraphStore {
         connection.pragma_update(None, "foreign_keys", "ON")?;
         connection.pragma_update(None, "busy_timeout", 5_000_i64)?;
         connection.execute_batch(SCHEMA)?;
+        // The outbox shares the workspace database so events and the facts
+        // they describe commit together.
+        connection.execute_batch(super::outbox::SCHEMA)?;
         connection.create_scalar_function(
             "aone_path_allowed",
             1,
@@ -70,6 +74,7 @@ impl GraphStore {
         enforce_workspace_limits(&transaction, DEFAULT_WORKSPACE_STORE_LIMITS)?;
         rebuild_resolution_edges(&transaction)?;
         super::bulk_persistence::restore_bulk_indexes_and_search_triggers(&transaction)?;
+        super::outbox::record_change(&transaction, "workspace.replaced", files.len())?;
         transaction.commit()?;
         Ok(())
     }
@@ -92,6 +97,7 @@ impl GraphStore {
         insert_indexed_file(&transaction, file)?;
         enforce_workspace_limits(&transaction, limits)?;
         rebuild_resolution_edges(&transaction)?;
+        super::outbox::record_change(&transaction, "workspace.file_indexed", 1)?;
         transaction.commit()?;
         Ok(())
     }
@@ -103,6 +109,7 @@ impl GraphStore {
             params![relative_path],
         )?;
         rebuild_resolution_edges(&transaction)?;
+        super::outbox::record_change(&transaction, "workspace.file_removed", 1)?;
         transaction.commit()?;
         Ok(())
     }
@@ -116,8 +123,25 @@ impl GraphStore {
             params![pattern],
         )?;
         rebuild_resolution_edges(&transaction)?;
+        super::outbox::record_change(&transaction, "workspace.files_removed", removed)?;
         transaction.commit()?;
         Ok(removed)
+    }
+
+    /// Durable events from committed mutations, oldest first. They stay pending
+    /// until acknowledged, so delivery is at-least-once.
+    pub fn pending_events(&self, limit: usize) -> AoneResult<Vec<OutboxRecord>> {
+        super::outbox::pending(&self.connection, limit)
+    }
+
+    /// Confirms every event up to and including `sequence` was handled.
+    pub fn acknowledge_events(&self, sequence: i64) -> AoneResult<usize> {
+        super::outbox::mark_delivered(&self.connection, sequence)
+    }
+
+    #[cfg(test)]
+    pub(super) fn connection_for_tests(&self) -> &rusqlite::Connection {
+        &self.connection
     }
 
     pub fn counts(&self) -> AoneResult<(usize, usize, usize)> {

@@ -1,3 +1,4 @@
+mod capability;
 mod commands;
 mod confirmation;
 mod environment;

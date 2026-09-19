@@ -5,6 +5,7 @@ mod bulk_tests;
 mod execution_flow;
 mod graph_store;
 mod limits;
+mod outbox;
 mod overview;
 mod persistence;
 mod records;
