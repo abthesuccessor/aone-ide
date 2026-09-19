@@ -40,6 +40,21 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('src-tauri/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
 
+      # Aone deliberately runs the fixed /usr/bin/git rather than searching
+      # PATH. That path is the macOS developer-tools shim, which refuses to run
+      # unless it can resolve an active developer directory, so pin the one the
+      # runner actually has before any git-backed test executes.
+      - name: Pin the active developer directory for /usr/bin/git
+        run: |
+          echo "xcode-select -p: $(xcode-select -p 2>&1 || true)"
+          echo "DEVELOPER_DIR=$(xcode-select -p)" >> "$GITHUB_ENV"
+          /usr/bin/git --version || true
+          probe="$(mktemp -d)"
+          ( cd "$probe" && DEVELOPER_DIR="$(xcode-select -p)" \
+              /usr/bin/git --no-pager init --template= -b main . ) \
+            && echo "git init probe: ok" \
+            || { echo "git init probe: FAILED"; exit 1; }
+
       - name: Install dependencies
         run: npm ci
 
