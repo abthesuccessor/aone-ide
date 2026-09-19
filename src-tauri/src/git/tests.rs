@@ -358,6 +358,9 @@ async fn status_and_diff_never_execute_repository_process_filters() {
 #[cfg(target_os = "macos")]
 #[tokio::test]
 async fn inspection_rejects_a_git_file_pointing_to_an_unrelated_repository() {
+    if !attribute_isolation_available().await {
+        return;
+    }
     let external = tempdir().expect("external repository directory");
     let external_root = external.path().canonicalize().expect("external root");
     assert!(
