@@ -46,14 +46,22 @@ jobs:
       # runner actually has before any git-backed test executes.
       - name: Pin the active developer directory for /usr/bin/git
         run: |
-          echo "xcode-select -p: $(xcode-select -p 2>&1 || true)"
           echo "DEVELOPER_DIR=$(xcode-select -p)" >> "$GITHUB_ENV"
-          /usr/bin/git --version || true
-          probe="$(mktemp -d)"
-          ( cd "$probe" && DEVELOPER_DIR="$(xcode-select -p)" \
-              /usr/bin/git --no-pager init --template= -b main . ) \
-            && echo "git init probe: ok" \
-            || { echo "git init probe: FAILED"; exit 1; }
+          {
+            echo '### Fixed git executable'
+            echo '```'
+            echo "xcode-select -p : $(xcode-select -p 2>&1 || true)"
+            echo "git --version   : $(/usr/bin/git --version 2>&1 || true)"
+            probe="$(mktemp -d)"
+            # The exact flag set src/git/process.rs uses. Several of these are
+            # recent; an older Apple Git rejects them outright, which surfaces
+            # as an opaque "init failed" in the tests.
+            ( cd "$probe" && DEVELOPER_DIR="$(xcode-select -p)" /usr/bin/git \
+                --no-pager --no-replace-objects --no-lazy-fetch \
+                --no-optional-locks --literal-pathspecs init --template= . ) 2>&1 \
+              && echo 'full flag probe : ok' || echo 'full flag probe : FAILED'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Install dependencies
         run: npm ci
