@@ -41,27 +41,39 @@ jobs:
           restore-keys: ${{ runner.os }}-cargo-
 
       # Aone deliberately runs the fixed /usr/bin/git rather than searching
-      # PATH. That path is the macOS developer-tools shim, which refuses to run
-      # unless it can resolve an active developer directory, so pin the one the
-      # runner actually has before any git-backed test executes.
-      - name: Pin the active developer directory for /usr/bin/git
+      # PATH, so it is bound to whatever Git the active developer tools ship —
+      # on this runner Apple Git 2.39.5. Git rejects an unknown top-level option
+      # outright, so a flag newer than the platform Git breaks every operation
+      # rather than degrading one. This step is a regression guard: it runs the
+      # real flag set and fails loudly if a too-new option is reintroduced,
+      # instead of letting it surface as opaque test assertions.
+      - name: Verify the fixed git accepts Aone's flag set
         run: |
           echo "DEVELOPER_DIR=$(xcode-select -p)" >> "$GITHUB_ENV"
+          export DEVELOPER_DIR="$(xcode-select -p)"
+          version="$(/usr/bin/git --version 2>&1 || true)"
           {
             echo '### Fixed git executable'
             echo '```'
             echo "xcode-select -p : $(xcode-select -p 2>&1 || true)"
-            echo "git --version   : $(/usr/bin/git --version 2>&1 || true)"
-            probe="$(mktemp -d)"
-            # The exact flag set src/git/process.rs uses. Several of these are
-            # recent; an older Apple Git rejects them outright, which surfaces
-            # as an opaque "init failed" in the tests.
-            ( cd "$probe" && DEVELOPER_DIR="$(xcode-select -p)" /usr/bin/git \
-                --no-pager --no-replace-objects --no-lazy-fetch \
-                --no-optional-locks --literal-pathspecs init --template= . ) 2>&1 \
-              && echo 'full flag probe : ok' || echo 'full flag probe : FAILED'
+            echo "git --version   : ${version}"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+          probe="$(mktemp -d)"
+          cd "$probe"
+          if ! /usr/bin/git \
+              --no-pager --no-replace-objects --no-optional-locks \
+              --literal-pathspecs \
+              -c core.fsmonitor=false -c core.hooksPath=/dev/null \
+              -c commit.gpgSign=false -c diff.external= \
+              -c core.attributesFile=/dev/null -c core.excludesFile=/dev/null \
+              -c credential.helper= \
+              init --template= . ; then
+            echo "::error::${version} rejected Aone's git flag set." \
+                 "A flag newer than the platform Git was likely introduced."
+            exit 1
+          fi
+          echo "flag set accepted by ${version}"
 
       - name: Install dependencies
         run: npm ci
