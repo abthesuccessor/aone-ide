@@ -16,7 +16,7 @@ use crate::{
 };
 
 pub(super) const DEFAULT_OPENAI_MODEL: &str = "gpt-5.6-luna";
-pub(super) const DEFAULT_ANTHROPIC_MODEL: &str = "claude-sonnet-4-20250514";
+pub(super) const DEFAULT_ANTHROPIC_MODEL: &str = "claude-sonnet-5";
 const MAX_API_KEY_BYTES: usize = 16 * 1024;
 const MAX_OLLAMA_ENDPOINT_BYTES: usize = 256;
 
