@@ -11,8 +11,16 @@ const CLONE_TIMEOUT: Duration = Duration::from_secs(120);
 const INIT_TIMEOUT: Duration = Duration::from_secs(12);
 const OUTPUT_LIMIT: usize = 16 * 1024;
 const DRAIN_TIMEOUT: Duration = Duration::from_millis(500);
+/// Fixed developer-directory locations, most specific first. `/usr/bin/git` is
+/// the macOS developer-tools shim; with the environment cleared it re-resolves
+/// the active developer directory itself and refuses to run when that lookup
+/// fails — for example when a full Xcode install has an unaccepted licence.
+/// These are constants, never ambient values, so isolation is preserved.
 #[cfg(target_os = "macos")]
-const COMMAND_LINE_TOOLS: &str = "/Library/Developer/CommandLineTools";
+const DEVELOPER_DIRECTORIES: &[&str] = &[
+    "/Library/Developer/CommandLineTools",
+    "/Applications/Xcode.app/Contents/Developer",
+];
 
 pub(super) async fn clone_repository(target: &Path, repository_url: &str) -> AoneResult<()> {
     let args = clone_arguments(repository_url);
@@ -73,15 +81,12 @@ async fn run_git(
         .env("GIT_CONFIG_NOSYSTEM", "1")
         .env("GIT_ATTR_NOSYSTEM", "1")
         .env("GIT_LFS_SKIP_SMUDGE", "1");
-    // `/usr/bin/git` is the macOS developer-tools shim. With the environment
-    // cleared it re-resolves the active developer directory and refuses to run
-    // when a full Xcode install has an unaccepted license, even though the
-    // Command Line Tools are present and sufficient. Pin the fixed Command Line
-    // Tools path — a constant, not an ambient value — so initialization does not
-    // depend on unrelated Xcode state.
     #[cfg(target_os = "macos")]
-    if Path::new(COMMAND_LINE_TOOLS).is_dir() {
-        command.env("DEVELOPER_DIR", COMMAND_LINE_TOOLS);
+    if let Some(developer_directory) = DEVELOPER_DIRECTORIES
+        .iter()
+        .find(|candidate| Path::new(candidate).is_dir())
+    {
+        command.env("DEVELOPER_DIR", developer_directory);
     }
     #[cfg(unix)]
     command.process_group(0);

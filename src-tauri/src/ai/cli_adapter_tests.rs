@@ -58,9 +58,14 @@ impl FakeCodex {
     }
 }
 
+/// Limits for tests that assert on a *non-timeout* outcome. The timeout has to
+/// stay clear of the behaviour under test: with only two seconds, a loaded
+/// machine can hit the deadline before a spinning fixture exceeds its output
+/// limit, turning an OutputLimit assertion into a spurious TimedOut. Tests that
+/// deliberately assert the timeout set their own short deadline.
 fn limits(stdout: usize) -> ProcessLimits {
     ProcessLimits {
-        timeout: Duration::from_secs(2),
+        timeout: Duration::from_secs(10),
         stdout,
         stderr: 1024,
     }
