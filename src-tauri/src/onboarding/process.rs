@@ -49,7 +49,6 @@ async fn run_git(
     command
         .arg("--no-pager")
         .arg("--no-replace-objects")
-        .arg("--no-lazy-fetch")
         .arg("--no-optional-locks")
         .args(["-c", "core.hooksPath=/dev/null"])
         .args(["-c", "credential.helper="])
@@ -80,7 +79,8 @@ async fn run_git(
         .env("GIT_CONFIG_SYSTEM", "/dev/null")
         .env("GIT_CONFIG_NOSYSTEM", "1")
         .env("GIT_ATTR_NOSYSTEM", "1")
-        .env("GIT_LFS_SKIP_SMUDGE", "1");
+        .env("GIT_LFS_SKIP_SMUDGE", "1")
+        .env("GIT_NO_LAZY_FETCH", "1");
     #[cfg(target_os = "macos")]
     if let Some(developer_directory) = DEVELOPER_DIRECTORIES
         .iter()

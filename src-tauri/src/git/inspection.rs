@@ -363,7 +363,6 @@ async fn create_empty_tree(git: &Path, git_dir: &Path, objects: &Path) -> AoneRe
     command
         .arg("--no-pager")
         .arg("--no-replace-objects")
-        .arg("--no-lazy-fetch")
         .arg(format!("--git-dir={}", git_dir.display()))
         .args(["hash-object", "-t", "tree", "-w", "--stdin"])
         .stdin(Stdio::null())
@@ -372,6 +371,7 @@ async fn create_empty_tree(git: &Path, git_dir: &Path, objects: &Path) -> AoneRe
         .kill_on_drop(true);
     scrub_git_environment(&mut command);
     isolate_configuration(&mut command);
+    command.env("GIT_NO_LAZY_FETCH", "1");
     command.env("GIT_OBJECT_DIRECTORY", objects);
     let output = tokio::time::timeout(EMPTY_TREE_TIMEOUT, command.output())
         .await

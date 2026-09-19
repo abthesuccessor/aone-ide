@@ -71,11 +71,18 @@ async fn execute_git(
     inspection: Option<&InspectionSnapshot>,
     isolated_configuration: bool,
 ) -> AoneResult<GitOutput> {
+    // `--no-lazy-fetch` is a Git 2.45 top-level option, newer than the Git that
+    // ships with several supported macOS/Xcode combinations, and Git rejects an
+    // unknown top-level option outright — which broke every Git operation, not
+    // just promisor ones. GIT_NO_LAZY_FETCH is its documented equivalent and is
+    // ignored by older Git, so the protection applies wherever it exists rather
+    // than failing hard where it does not. Promisor traffic stays constrained by
+    // the protocol allow-lists, the disabled credential helper, and
+    // GIT_TERMINAL_PROMPT=0 either way.
     let mut command = Command::new(executable);
     command
         .arg("--no-pager")
         .arg("--no-replace-objects")
-        .arg("--no-lazy-fetch")
         .arg("--no-optional-locks")
         .arg("--literal-pathspecs")
         .args(["-c", "core.fsmonitor=false"])
@@ -97,6 +104,7 @@ async fn execute_git(
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .kill_on_drop(true)
+        .env("GIT_NO_LAZY_FETCH", "1")
         .env("GIT_TERMINAL_PROMPT", "0")
         .env("GCM_INTERACTIVE", "never")
         .env("GIT_PAGER", "cat")
