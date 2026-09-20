@@ -21,4 +21,5 @@ pub(crate) use command::{
     __tauri_command_name_inspect_project_environment,
 };
 pub use command::{get_project_environment_report, inspect_project_environment};
+pub(crate) use config_hints::detected_environment_names;
 pub use state::ProjectEnvironmentState;

@@ -81,6 +81,20 @@ struct HintCollector {
     runtime_paths: BTreeMap<&'static str, BTreeSet<String>>,
 }
 
+/// The environment-variable names this project's own configuration already
+/// references, for callers that need only the names and not the full report.
+///
+/// This is the same bounded scan `collect_project_hints` performs — at most
+/// `MAX_HINT_FILES` files, `MAX_HINT_FILE_BYTES` each, and `MAX_ENVIRONMENT_NAMES`
+/// names — so it reads no more of the workspace than an inspection already does.
+/// It returns names only; values are never read here.
+pub(crate) fn detected_environment_names(
+    root: &Path,
+    store: &GraphStore,
+) -> AoneResult<Vec<String>> {
+    Ok(collect_project_hints(root, store)?.environment_names)
+}
+
 pub(super) fn collect_project_hints(root: &Path, store: &GraphStore) -> AoneResult<ProjectHints> {
     let mut collector = HintCollector::default();
     let mut seen = BTreeSet::new();

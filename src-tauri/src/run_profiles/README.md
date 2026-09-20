@@ -43,3 +43,17 @@ Run the focused feature suite with:
 ```bash
 cargo test run_profiles::tests
 ```
+
+## Required environment variables
+
+Discovery reads no configuration, so `profile` starts every profile with an
+empty `required_env`. `attach_required_env` joins in the variable names the
+project's own configuration already references, which the project-environment
+hint scan detects under its existing file, byte and count bounds.
+
+That join is what makes the pre-flight check meaningful: `ensure_required_env`
+and the renderer's missing-variable warning were already implemented but were
+being handed an empty list, so nothing could ever be reported. Names only —
+a value is never carried on a profile — and only the conventional
+`[A-Z0-9_]` spelling is accepted, because a detected token that cannot be a
+variable name would become a requirement the user can never satisfy.

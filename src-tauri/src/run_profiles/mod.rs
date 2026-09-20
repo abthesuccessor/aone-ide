@@ -6,3 +6,4 @@ mod profile;
 mod tests;
 
 pub use discovery::detect_profiles;
+pub(crate) use profile::attach_required_env;
